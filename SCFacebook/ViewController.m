@@ -127,6 +127,7 @@
 }
 
 - (IBAction)logout:(id)sender {
+    
     [SCFacebook logoutCallBack:^(BOOL success, id result) {
         if (success) {
             nameLabel.text = @"Name";

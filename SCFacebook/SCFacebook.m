@@ -9,7 +9,6 @@
 #import "SCFacebook.h"
 #import "SBJSON.h"
 
-//#define RemoveNull(field) ([field isKindOfClass:[NSNull class]]) ? @"" : field;
 
 static SCFacebook * _scFacebook = nil;
 
@@ -102,7 +101,7 @@ static SCFacebook * _scFacebook = nil;
 
 -(void)_loginWithAppId:(NSString *)appId callBack:(SCFacebookCallback)callBack{
     
-    if (!appId) {
+    if (!appId || [appId length] == 0) {
         NSString *error = @"Missing app ID. You cannot run the app until you provide this in the code.";
         
         Alert(@"ERROR", error)
@@ -222,13 +221,8 @@ static SCFacebook * _scFacebook = nil;
             [actionLinks setValue:actLink forKey:@"link"];
         }
         
-        if ([actionLinks count] == 0) {
-            [actionLinks release];
-        }else{
-            //            NSArray* actionLinks = [NSArray arrayWithObjects:[NSDictionary dictionaryWithObjectsAndKeys:
-            //                                                            @"Get Started",@"name",@"http://m.facebook.com/apps/hackbookios/",@"link", nil], nil];
-            actionLinksStr = [jsonWriter stringWithObject:actionLinks];  
-        }
+        actionLinksStr = [jsonWriter stringWithObject:actionLinks];  
+        [actionLinks release];
     }
     
     NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
@@ -261,24 +255,12 @@ static SCFacebook * _scFacebook = nil;
         [params setValue:actionLinksStr forKey:@"actions"];   
     }
     
-    
-    // Dialog parameters
-//    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-//                                   @"I'm using the Hackbook for iOS app", @"name",
-//                                   @"Hackbook for iOS.", @"caption",
-//                                   @"Check out Hackbook for iOS to learn how you can make your iOS apps social using Facebook Platform.", @"description",
-//                                   @"http://m.facebook.com/apps/hackbookios/", @"link",
-//                                   @"http://www.facebookmobileweb.com/hackbook/img/facebook_icon_large.png", @"picture",
-//                                   actionLinksStr, @"actions",
-//                                   nil];
-    
     if ([params count] > 0) {
         [_facebook dialog:@"feed" andParams:params andDelegate:self];
         self.callback = [[callBack copy] autorelease];        
     }else{
         callBack(NO, @"ERROR");
     }
-    
 }
 
 
@@ -405,9 +387,9 @@ static SCFacebook * _scFacebook = nil;
     // 1. the app is no longer authorized
     // 2. the user logged out of Facebook from m.facebook.com or the Facebook app
     // 3. the user has changed their password
-    //    if ([error code] == 190) {
-    //        [self showLoggedOut:YES];
-    //    }
+    if ([error code] == 190) {
+        [self loggedOut:YES];
+    }
 }
 
 

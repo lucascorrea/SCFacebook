@@ -40,6 +40,8 @@
 		F9694EBA148073DE000B8A59 /* FriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9694EB9148073DE000B8A59 /* FriendCell.xib */; };
 		F9694EC214808F21000B8A59 /* backgroundButton.png in Resources */ = {isa = PBXBuildFile; fileRef = F9694EC014808F21000B8A59 /* backgroundButton.png */; };
 		F9694EC314808F21000B8A59 /* backgroundNavigation.png in Resources */ = {isa = PBXBuildFile; fileRef = F9694EC114808F21000B8A59 /* backgroundNavigation.png */; };
+		F9A4E33514812E1000596AC5 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F9A4E33414812E1000596AC5 /* icon@2x.png */; };
+		F9A4E33714812E1500596AC5 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F9A4E33614812E1500596AC5 /* icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +102,8 @@
 		F9694EB9148073DE000B8A59 /* FriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendCell.xib; sourceTree = "<group>"; };
 		F9694EC014808F21000B8A59 /* backgroundButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = backgroundButton.png; path = images/backgroundButton.png; sourceTree = "<group>"; };
 		F9694EC114808F21000B8A59 /* backgroundNavigation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = backgroundNavigation.png; path = images/backgroundNavigation.png; sourceTree = "<group>"; };
+		F9A4E33414812E1000596AC5 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
+		F9A4E33614812E1500596AC5 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +172,8 @@
 		F95F26CE147DCE8500715CC8 = {
 			isa = PBXGroup;
 			children = (
+				F9A4E33614812E1500596AC5 /* icon.png */,
+				F9A4E33414812E1000596AC5 /* icon@2x.png */,
 				F95F26E3147DCE8600715CC8 /* SCFacebook */,
 				F95F26DC147DCE8500715CC8 /* Frameworks */,
 				F95F26DA147DCE8500715CC8 /* Products */,
@@ -345,6 +351,8 @@
 				F9694EBA148073DE000B8A59 /* FriendCell.xib in Resources */,
 				F9694EC214808F21000B8A59 /* backgroundButton.png in Resources */,
 				F9694EC314808F21000B8A59 /* backgroundNavigation.png in Resources */,
+				F9A4E33514812E1000596AC5 /* icon@2x.png in Resources */,
+				F9A4E33714812E1500596AC5 /* icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
