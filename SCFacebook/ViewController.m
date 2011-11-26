@@ -74,7 +74,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    return NO;
 }
 
 - (void)dealloc {
@@ -166,7 +166,7 @@
 
 - (IBAction)publishYourWall:(id)sender {
     
-    [SCFacebook userPostWallActionName:@"Portifolio" actionLink:@"http://www.lucascorrea.com/portifolio" paramName:@"I'm using the SCFacebook" paramCaption:@"SCFacebook" paramDescription:@"A simple and clean to implement login to facebook-ios-sdk using Blocks." paramLink:@"https://github.com/lucascorrea/SCFacebook" paramPicture: @"http://www.lucascorrea.com/lucas_apple.png" callBack:^(BOOL success, id result) {
+    [SCFacebook userPostWallActionName:@"Portfolio" actionLink:@"http://www.lucascorrea.com/portifolio" paramName:@"I'm using the SCFacebook" paramCaption:@"SCFacebook" paramDescription:@"A simple and clean to implement login to facebook-ios-sdk using Blocks." paramLink:@"https://github.com/lucascorrea/SCFacebook" paramPicture: @"http://www.lucascorrea.com/lucas_apple.png" callBack:^(BOOL success, id result) {
         if (success) {
             Alert(@"Alert", result);
         }else{
