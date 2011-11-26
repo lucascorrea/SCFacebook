@@ -14,7 +14,7 @@ Now we need to copy the `SCFacebook.h` `SCFacebook.m` for your project.
 In the class `SCFacebook.h` need to add your `kAppId` Facebook as example:
  
 	#import "Facebook.h"
-	#define kAppId @"140422319335414"
+	#define kAppId @"YOUR_APP_ID"
 	
 	@interface SCFacebook : NSObject <FBSessionDelegate, FBRequestDelegate, FBDialogDelegate>{
 
