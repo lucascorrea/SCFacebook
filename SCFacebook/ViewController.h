@@ -7,7 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EGOImageView.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController{
+    
+    IBOutlet EGOImageView *photoImageView;
+    IBOutlet UILabel *nameLabel;
+    IBOutlet UILabel *emailLabel;
+    IBOutlet UILabel *birthdayLabel;
+    IBOutlet UITextView *aboutTextView;
+}
+
+- (IBAction)login:(id)sender;
+- (IBAction)logout:(id)sender;
+- (IBAction)getUserInfo:(id)sender;
+- (IBAction)getFriends:(id)sender;
+- (IBAction)publishYourWall:(id)sender;
 
 @end

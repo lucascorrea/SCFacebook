@@ -3,34 +3,77 @@
 //  SCFacebook
 //
 //  Created by Lucas Correa on 23/11/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 Siriuscode Solutions. All rights reserved.
 //
 
 #import "AppDelegate.h"
 
 #import "ViewController.h"
+#import "SCFacebook.h"
 
 @implementation AppDelegate
 
 @synthesize window = _window;
 @synthesize viewController = _viewController;
+@synthesize navigationController = _navigationController;
 
 - (void)dealloc
 {
     [_window release];
     [_viewController release];
+    [_navigationController release];
     [super dealloc];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    
     // Override point for customization after application launch.
     self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
-    self.window.rootViewController = self.viewController;
+    
+    self.navigationController = [[[UINavigationController alloc] initWithRootViewController:self.viewController] autorelease];
+    
+    [[UINavigationBar appearance]setBackgroundImage:[UIImage imageNamed:@"backgroundNavigation"] forBarMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setTintColor:[UIColor blackColor]];
+
+    
+    self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
+    
+    //Loading
+    loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+	loadingView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.8];
+	UIActivityIndicatorView *aiView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+	[loadingView addSubview:aiView];
+	[aiView startAnimating];
+	aiView.center =  CGPointMake(160, 240);
+	[aiView release];
+	[self.window addSubview:loadingView];
+    [loadingView release];
+	loadingView.hidden = YES;
+    
     return YES;
 }
+
+
+
+
+
+//SCFacebook Implementation
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    [[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    [[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
+    return YES;
+}
+
+
+
+
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
