@@ -9,20 +9,20 @@ Before you begin development with the Facebook iOS SDK, you will need to install
 Getting Started
 =================
 
-Now we need to copy the 'SCFacebook.h 'SCFacebook.m for your project.
+Now we need to copy the `SCFacebook.h` `SCFacebook.m` for your project.
 
-In the class 'SCFacebook.h need to add your 'kAppId Facebook as example:
+In the class `SCFacebook.h` need to add your `kAppId` Facebook as example:
  
-  #import "Facebook.h"
+	#import "Facebook.h"
 	#define kAppId @"140422319335414"
-
+	
 	@interface SCFacebook : NSObject <FBSessionDelegate, FBRequestDelegate, FBDialogDelegate>{
 
-Once you have set up the 'URL Scheme as image below:
+Once you have set up the `URL Scheme` as image below:
 
 [![]( Https://developers.facebook.com/attachment/ios_config.png)]
 
-Now in its' 'AppDelegate need to add two methods
+Now in it's `AppDelegate` need to add two methods
 
 	#import "SCFacebook.h"
 	@implementation AppDelegate
@@ -64,8 +64,9 @@ To use the component is very easy. Import the header for your class.
 
 	#pragma mark - Button Action
 	- (IBAction)login:(id)sender {
-	    [SCFacebook loginCallBack:^(BOOL success, id result) {
-	        if (success) {
-	        }
-	    }];
+	    
+		[SCFacebook loginCallBack:^(BOOL success, id result) {
+	        	if (success) {
+	        	}
+	    	}];
 	}
