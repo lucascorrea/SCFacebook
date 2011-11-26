@@ -1,0 +1,8 @@
+Tutorial
+
+- Api facebook download
+- Explicar sobre o import da classe SCFacebook
+- kappId
+-URL Scheme
+- AppDelegate openURL
+- Metodos login, logout, getUserInfo, getFriends and Publish your to wall
