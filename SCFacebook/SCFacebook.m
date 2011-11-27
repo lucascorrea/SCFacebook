@@ -13,7 +13,7 @@
 static SCFacebook * _scFacebook = nil;
 
 @interface SCFacebook()
-@property (nonatomic, retain) SCFacebookCallback callback;
+@property (nonatomic, copy) SCFacebookCallback callback;
 @end
 
 
@@ -160,7 +160,7 @@ static SCFacebook * _scFacebook = nil;
             _permissions  = [NSArray arrayWithObjects:PERMISSIONS, nil];
             [_facebook authorize:_permissions];
             
-            self.callback = [[callBack copy] autorelease];
+            self.callback = callBack;
         } 
         else {
             callBack(YES,@"Logged");
@@ -170,7 +170,7 @@ static SCFacebook * _scFacebook = nil;
 }
 
 -(void)_logoutCallBack:(SCFacebookCallback)callBack{
-    self.callback = [[callBack copy] autorelease];
+    self.callback = callBack;
     [_facebook logout:self];
 }
 
@@ -186,7 +186,7 @@ static SCFacebook * _scFacebook = nil;
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"SELECT %@ FROM user WHERE uid=me()",fql], @"query",
                                    nil];
     [_facebook requestWithMethodName:@"fql.query" andParams:params andHttpMethod:@"POST" andDelegate:self];
-    self.callback = [[callBack copy] autorelease];  
+    self.callback = callBack;
 }
 
 -(void)_getUserFriendsCallBack:(SCFacebookCallback)callBack{
@@ -197,7 +197,8 @@ static SCFacebook * _scFacebook = nil;
     }
     
     [_facebook requestWithGraphPath:@"me/friends" andDelegate:self];
-    self.callback = [[callBack copy] autorelease];
+    
+    self.callback = callBack;
 }
 
 -(void)_userPostWallActionName:(NSString*)actName actionLink:(NSString*)actLink paramName:(NSString*)pName paramCaption:(NSString*)pCaption paramDescription:(NSString*)pDescription paramLink:(NSString*)pLink paramPicture:(NSString*)pPicture callBack:(SCFacebookCallback)callBack{
@@ -260,7 +261,8 @@ static SCFacebook * _scFacebook = nil;
     
     if ([params count] > 0) {
         [_facebook dialog:@"feed" andParams:params andDelegate:self];
-        self.callback = [[callBack copy] autorelease];        
+        
+        self.callback = callBack;
     }else{
         callBack(NO, @"ERROR");
     }

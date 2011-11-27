@@ -101,6 +101,8 @@
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="862455580"/>
 						<string key="NSReuseIdentifierKey">_NS:567</string>
+						<bool key="IBUIClipsSubviews">YES</bool>
+						<int key="IBUIContentMode">2</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
