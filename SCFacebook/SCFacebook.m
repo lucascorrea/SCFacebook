@@ -29,9 +29,12 @@ static SCFacebook * _scFacebook = nil;
 
 +(SCFacebook *)shared {    
     @synchronized (self){
-        if(_scFacebook == nil) {
+        
+        static dispatch_once_t pred;
+        
+        dispatch_once(&pred, ^{
             _scFacebook = [[SCFacebook alloc] init];
-        }
+        });
     }
     
     return _scFacebook;
