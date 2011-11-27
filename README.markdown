@@ -1,6 +1,6 @@
 The SCFacebook is a simpler and cleaner to use the api [Facebook-ios-sdk] (https://github.com/facebook/facebook-ios-sdk) with Blocks.
 
-[![]( http://www.lucascorrea.com/scfacebook.png)(http://www.lucascorrea.com/scfacebook_friends.png)]
+[![]( http://www.lucascorrea.com/scfacebook.png)](http://www.lucascorrea.com/scfacebook_friends.png)
 
 Installation
 =================
