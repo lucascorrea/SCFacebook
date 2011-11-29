@@ -42,7 +42,7 @@ Now in it's `AppDelegate` need to add two methods
 Methods
 ===========
 
-There is 05 methods:
+There is 09 methods:
 
 	+(void)loginCallBack:(SCFacebookCallback)callBack;
 	
@@ -52,7 +52,15 @@ There is 05 methods:
 	
 	+(void)getUserFriendsCallBack:(SCFacebookCallback)callBack;
 	
-	+(void)userPostWallActionName:(NSString*)actName actionLink:(NSString*)actLink paramName:(NSString*)pName paramCaption:(NSString*)pCaption paramDescription:(NSString*)pDescription paramLink:(NSString*)pLink paramPicture:(NSString*)pPicture callBack:(SCFacebookCallback)callBack;
+	+(void)feedPostWithLinkPath:(NSString*)_url caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack;
+	
+	+(void)feedPostWithMessage:(NSString*)_message callBack:(SCFacebookCallback)callBack;
+	
+	+(void)feedPostWithMessageDialogCallBack:(SCFacebookCallback)callBack;
+	
+	+(void)feedPostWithPhoto:(UIImage*)_photo caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack;
+	
+	+(void)myFeedCallBack:(SCFacebookCallback)callBack;
 
 
 Example Usage
