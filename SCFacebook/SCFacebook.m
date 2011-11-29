@@ -38,7 +38,7 @@ static SCFacebook * _scFacebook = nil;
 @implementation SCFacebook
 
 @synthesize callback = _callback;
-
+@synthesize postType;
 
 
 #pragma mark -
@@ -200,8 +200,7 @@ static SCFacebook * _scFacebook = nil;
         return;
     }
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"SELECT %@ FROM user WHERE uid=me()",fql], @"query",
-                                   nil];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"SELECT %@ FROM user WHERE uid=me()",fql], @"query",nil];
     [_facebook requestWithMethodName:@"fql.query" andParams:params andHttpMethod:@"POST" andDelegate:self];
     self.callback = callBack;
 }
@@ -214,11 +213,12 @@ static SCFacebook * _scFacebook = nil;
     }
     
     [_facebook requestWithGraphPath:@"me/friends" andDelegate:self];
-    
     self.callback = callBack;
 }
 
--(void)_userPostWallActionName:(NSString*)actName actionLink:(NSString*)actLink paramName:(NSString*)pName paramCaption:(NSString*)pCaption paramDescription:(NSString*)pDescription paramLink:(NSString*)pLink paramPicture:(NSString*)pPicture callBack:(SCFacebookCallback)callBack{
+
+
+-(void)_feedPostWithLinkPath:(NSString*)_url caption:(NSString*)_caption message:(NSString*)_message photo:(UIImage*)_photo dialog:(BOOL)_dialog callBack:(SCFacebookCallback)callBack{
     
     if (![_facebook isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -226,66 +226,53 @@ static SCFacebook * _scFacebook = nil;
         return;
     }
     
-    NSString *actionLinksStr = nil;
-    
-    if (![actName isKindOfClass:[NSNull class]] && ![actLink isKindOfClass:[NSNull class]]) {
-        SBJSON *jsonWriter = [[SBJSON new] autorelease];
-        
-        // The action links to be shown with the post in the feed
-        
-        NSMutableDictionary *actionLinks = [[NSMutableDictionary alloc] init];
-        if (![actName isKindOfClass:[NSNull class]]) {
-            [actionLinks setValue:actName forKey:@"name"];
-        }
-        
-        if (![actLink isKindOfClass:[NSNull class]]) {
-            [actionLinks setValue:actLink forKey:@"link"];
-        }
-        
-        actionLinksStr = [jsonWriter stringWithObject:actionLinks];  
-        [actionLinks release];
-    }
-    
     NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
+    //Need to provide POST parameters to the Facebook SDK for the specific post type
+    NSString *graphPath = @"me/feed";
     
-    if (![pName isKindOfClass:[NSNull class]]) {
-        [params setValue:pName forKey:@"name"];   
+    switch (postType) {
+        case FBPostTypeLink:{
+            [params setObject:@"link" forKey:@"type"];
+            [params setObject:_url forKey:@"link"];
+            [params setObject:_caption forKey:@"description"];
+            break;
+        }
+        case FBPostTypeStatus:{
+            [params setObject:@"status" forKey:@"type"];
+            [params setObject:_message forKey:@"message"];
+            break;
+        }
+        case FBPostTypePhoto:{
+            graphPath = @"me/photos";
+            [params setObject:_photo forKey:@"source"];
+            [params setObject:_caption forKey:@"message"];
+            break;
+        }
+            
+        default:
+            break;
     }
     
-    if (![pCaption isKindOfClass:[NSNull class]]) {
-        [params setValue:pCaption forKey:@"caption"];   
-    }
-    
-    if (![pDescription isKindOfClass:[NSNull class]]) {
-        [params setValue:pDescription forKey:@"description"];   
-    }
-    
-    if (![pLink isKindOfClass:[NSNull class]]) {
-        [params setValue:pLink forKey:@"link"];   
-    }
-    
-    if (![pPicture isKindOfClass:[NSNull class]]) {
-        [params setValue:pPicture forKey:@"picture"];   
-    }
-    
-    if (![pName isKindOfClass:[NSNull class]]) {
-        [params setValue:pName forKey:@"name"];   
-    }
-    
-    if (actionLinksStr != nil) {
-        [params setValue:actionLinksStr forKey:@"actions"];   
-    }
-    
-    if ([params count] > 0) {
+    if(_dialog){
         [_facebook dialog:@"feed" andParams:params andDelegate:self];
-        
         self.callback = callBack;
     }else{
-        callBack(NO, @"ERROR");
+        [_facebook requestWithGraphPath:graphPath andParams:params andHttpMethod:@"POST" andDelegate:self];     
+        self.callback = callBack;
     }
 }
 
-
+-(void)_myFeedCallBack:(SCFacebookCallback)callBack{
+    
+    if (![_facebook isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        [callBack release];
+        return;
+    }
+    
+    [_facebook requestWithGraphPath:@"me/feed" andDelegate:self];     
+    self.callback = callBack;
+}
 
 
 #pragma mark - 
@@ -303,20 +290,33 @@ static SCFacebook * _scFacebook = nil;
 	[[SCFacebook shared] _getUserFQL:fql callBack:callBack];
 }
 
-
 +(void)getUserFriendsCallBack:(SCFacebookCallback)callBack{
 	[[SCFacebook shared] _getUserFriendsCallBack:callBack];
 }
 
-
-+(void)userPostWallActionName:(NSString*)actName actionLink:(NSString*)actLink paramName:(NSString*)pName paramCaption:(NSString*)pCaption paramDescription:(NSString*)pDescription paramLink:(NSString*)pLink paramPicture:(NSString*)pPicture callBack:(SCFacebookCallback)callBack{
-    [[SCFacebook shared] _userPostWallActionName:actName actionLink:actLink paramName:pName paramCaption:pCaption paramDescription:pDescription paramLink:pLink paramPicture:pPicture callBack:callBack];
++(void)feedPostWithLinkPath:(NSString*)_url caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack{
+    [SCFacebook shared].postType = FBPostTypeLink;
+    [[SCFacebook shared] _feedPostWithLinkPath:_url caption:_caption message:nil photo:nil dialog:NO callBack:callBack];
 }
 
++(void)feedPostWithMessage:(NSString*)_message callBack:(SCFacebookCallback)callBack{
+    [SCFacebook shared].postType = FBPostTypeStatus;
+    [[SCFacebook shared] _feedPostWithLinkPath:nil caption:nil message:_message photo:nil dialog:NO callBack:callBack];    
+}
 
++(void)feedPostWithMessageDialogCallBack:(SCFacebookCallback)callBack{
+    [SCFacebook shared].postType = FBPostTypeStatus;
+    [[SCFacebook shared] _feedPostWithLinkPath:nil caption:nil message:@"" photo:nil dialog:YES callBack:callBack];    
+}
 
++(void)feedPostWithPhoto:(UIImage*)_photo caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack{
+    [SCFacebook shared].postType = FBPostTypePhoto;
+    [[SCFacebook shared] _feedPostWithLinkPath:nil caption:_caption message:nil photo:_photo dialog:NO callBack:callBack];
+}
 
-
++(void)myFeedCallBack:(SCFacebookCallback)callBack{
+    [[SCFacebook shared] _myFeedCallBack:callBack];
+}
 
 #pragma mark - 
 #pragma mark FBSessionDelegate Methods
@@ -388,10 +388,13 @@ static SCFacebook * _scFacebook = nil;
         NSArray *resultData = [result objectForKey:@"data"];
         if ([resultData count] > 0) {
             self.callback(YES,resultData);
+        }else  if ([result isKindOfClass:[NSDictionary class]]) {
+            self.callback(YES,@"Publish Successfully");
         }else{
-            self.callback(NO,result);
+            self.callback(NO,@"ERROR");
         }
-        //        _userPermissions = [[result objectForKey:@"data"] objectAtIndex:0];
+        
+        // _userPermissions = [[result objectForKey:@"data"] objectAtIndex:0];
     }
 }
 
@@ -400,10 +403,10 @@ static SCFacebook * _scFacebook = nil;
  * successfully.
  */
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
-    NSLog(@"Err message: %@", [[error userInfo] objectForKey:@"error_msg"]);
+    NSLog(@"Err message: %@", [[error userInfo] objectForKey:@"message"]);
     NSLog(@"Err code: %d", [error code]);
     
-    self.callback(YES,[[error userInfo] objectForKey:@"error_msg"]);
+    self.callback(YES,[[error userInfo] objectForKey:@"message"]);
     
     // Show logged out state if:
     // 1. the app is no longer authorized

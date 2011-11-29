@@ -31,25 +31,38 @@
 
 #define OPEN_URL @"OPEN_URL"
 #define FQL_USER_STANDARD @"uid, name, email, birthday_date, about_me, pic"
-#define PERMISSIONS @"user_about_me",@"user_birthday",@"email"
+#define PERMISSIONS @"user_about_me",@"user_birthday",@"email", @"user_photos"
 
 
 #define Alert(title,msg)  [[[[UIAlertView alloc] initWithTitle:title message:msg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] autorelease] show];
 
 typedef void(^SCFacebookCallback)(BOOL success, id result);
 
+typedef enum {
+    FBPostTypeStatus = 0,
+    FBPostTypePhoto = 1,
+    FBPostTypeLink = 2
+} FBPostType;
+
 @interface SCFacebook : NSObject <FBSessionDelegate, FBRequestDelegate, FBDialogDelegate>{
     Facebook *_facebook;
     NSArray *_permissions;
     NSMutableDictionary *_userPermissions;
     SCFacebookCallback _callback;
+    FBPostType postType;
 }
+
+@property (nonatomic, assign) FBPostType postType;
 
 +(SCFacebook *)shared;
 +(void)loginCallBack:(SCFacebookCallback)callBack;
 +(void)logoutCallBack:(SCFacebookCallback)callBack;
 +(void)getUserFQL:(NSString*)fql callBack:(SCFacebookCallback)callBack;
 +(void)getUserFriendsCallBack:(SCFacebookCallback)callBack;
-+(void)userPostWallActionName:(NSString*)actName actionLink:(NSString*)actLink paramName:(NSString*)pName paramCaption:(NSString*)pCaption paramDescription:(NSString*)pDescription paramLink:(NSString*)pLink paramPicture:(NSString*)pPicture callBack:(SCFacebookCallback)callBack;
++(void)feedPostWithLinkPath:(NSString*)_url caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack;
++(void)feedPostWithMessage:(NSString*)_message callBack:(SCFacebookCallback)callBack;
++(void)feedPostWithMessageDialogCallBack:(SCFacebookCallback)callBack;
++(void)feedPostWithPhoto:(UIImage*)_photo caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack;
++(void)myFeedCallBack:(SCFacebookCallback)callBack;
 
 @end

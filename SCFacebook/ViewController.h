@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "EGOImageView.h"
 
-@interface ViewController : UIViewController{
+@interface ViewController : UIViewController <UIActionSheetDelegate>{
     
     IBOutlet EGOImageView *photoImageView;
     IBOutlet UILabel *nameLabel;

@@ -149,30 +149,75 @@
     loadingView.hidden = NO;
     
     [SCFacebook getUserFriendsCallBack:^(BOOL success, id result) {
+        loadingView.hidden = YES;
         if (success) {
-            loadingView.hidden = YES;
             
             FriendsViewControler *friendsViewController = [[[FriendsViewControler alloc] init]autorelease];
             friendsViewController.friendsArray = result;
             [self.navigationController pushViewController:friendsViewController animated:YES];            
         }else{
-            
-            loadingView.hidden = YES;
-            
             Alert(@"Alert", result);
         }
     }];
 }
 
 - (IBAction)publishYourWall:(id)sender {
+
+    UIActionSheet *sheet = [[UIActionSheet alloc]
+                            initWithTitle:@"Option Publish"
+                            delegate:self
+                            cancelButtonTitle:nil
+                            destructiveButtonTitle:@"Cancel"
+                            otherButtonTitles:@"Link", @"Message", @"Message Dialog", @"Photo", nil];
+    sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+	[sheet showFromRect:self.view.bounds inView:self.view animated:YES];
+	[sheet release];
+}
+
+#pragma mark - UIActionSheetDelegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	if (buttonIndex == actionSheet.destructiveButtonIndex) { return; }
     
-    [SCFacebook userPostWallActionName:@"Portfolio" actionLink:@"http://www.lucascorrea.com/portifolio" paramName:@"I'm using the SCFacebook" paramCaption:@"SCFacebook" paramDescription:@"A simple and clean to implement login to facebook-ios-sdk using Blocks." paramLink:@"https://github.com/lucascorrea/SCFacebook" paramPicture: @"http://www.lucascorrea.com/lucas_apple.png" callBack:^(BOOL success, id result) {
-        if (success) {
-            Alert(@"Alert", result);
-        }else{
-            Alert(@"Alert", result);            
-        }
-    }];
+    switch (buttonIndex) {
+            
+            //Link
+		case 1:{
+            loadingView.hidden = NO;
+            [SCFacebook feedPostWithLinkPath:@"http://www.lucascorrea.com" caption:@"Portfolio" callBack:^(BOOL success, id result) {
+                loadingView.hidden = YES;
+                Alert(@"Alert", result);            
+            }];
+            break;
+		}
+            
+            //Message
+		case 2:{
+            loadingView.hidden = NO;
+            [SCFacebook feedPostWithMessage:@"This is message" callBack:^(BOOL success, id result) {
+                loadingView.hidden = YES;
+                Alert(@"Alert", result);            
+            }];
+            break;
+		}
+            //Message Dialog
+		case 3:{
+            
+            [SCFacebook feedPostWithMessageDialogCallBack:^(BOOL success, id result) {
+                Alert(@"Alert", result);            
+            }];
+            break;
+		}
+            //Photo
+        case 4:{
+            UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"]]];
+            loadingView.hidden = NO;
+            [SCFacebook feedPostWithPhoto:image caption:@"This is message with photo" callBack:^(BOOL success, id result) {
+                loadingView.hidden = YES;
+                Alert(@"Alert", result);            
+            }];
+            break;
+		}
+	}
 }
 
 @end
