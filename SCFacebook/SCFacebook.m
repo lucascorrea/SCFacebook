@@ -275,11 +275,9 @@ static SCFacebook * _scFacebook = nil;
 }
 
 - (void)_inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack {
-    NSMutableDictionary * params = nil;
+    NSMutableDictionary * params = [NSMutableDictionary dictionary];
     if (_message) {
-        params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                  _message,  @"message",
-                  nil];
+        [params setObject:_message forKey:@"message"];
     }
 
     [_facebook dialog:@"apprequests"
