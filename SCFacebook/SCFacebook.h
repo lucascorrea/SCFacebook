@@ -64,5 +64,6 @@ typedef enum {
 +(void)feedPostWithMessageDialogCallBack:(SCFacebookCallback)callBack;
 +(void)feedPostWithPhoto:(UIImage*)_photo caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack;
 +(void)myFeedCallBack:(SCFacebookCallback)callBack;
++(void)inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack;
 
 @end

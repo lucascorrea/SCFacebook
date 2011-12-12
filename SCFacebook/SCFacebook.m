@@ -274,6 +274,19 @@ static SCFacebook * _scFacebook = nil;
     self.callback = callBack;
 }
 
+- (void)_inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack {
+    NSMutableDictionary * params = nil;
+    if (message) {
+        params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                  message,  @"message",
+                  nil];
+    }
+
+    [_facebook dialog:@"apprequests"
+           andParams:params
+         andDelegate:self];
+    self.callback = callBack;
+}
 
 #pragma mark - 
 #pragma mark Public Methods Class
@@ -318,6 +331,9 @@ static SCFacebook * _scFacebook = nil;
     [[SCFacebook shared] _myFeedCallBack:callBack];
 }
 
++(void)inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack{
+    [[SCFacebook shared] _inviteFriendsWithMessage:message callBack:callBack];
+}
 #pragma mark - 
 #pragma mark FBSessionDelegate Methods
 
@@ -438,6 +454,26 @@ static SCFacebook * _scFacebook = nil;
 - (void)dialog:(FBDialog*)dialog didFailWithError:(NSError *)error {
     NSLog(@"Error message: %@", [[error userInfo] objectForKey:@"error_msg"]);
     self.callback(NO, [[error userInfo] objectForKey:@"error_msg"]);
+}
+
+- (void)dialogCompleteWithUrl:(NSURL *)url {
+    //If completed the request successfully
+    if ([url.absoluteString hasPrefix:@"fbconnect://success?request="]) {
+        NSMutableArray * friendsIds = [NSMutableArray array];
+        NSError * error;
+        //Extract the friend ids
+        //format to[0]=FRIEND_0_ID&to[1]=FRIEND_1_ID ... &to[n]=FRIEND_N_ID
+        NSRegularExpression * regExp = [NSRegularExpression regularExpressionWithPattern:@"%5B\\d+%5D=(\\d+)" options:NSRegularExpressionCaseInsensitive error:&error];
+        [regExp enumerateMatchesInString:url.absoluteString
+                                 options:0
+                                   range:NSMakeRange(0, url.absoluteString.length)
+                              usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                                  NSString * friendId = [url.absoluteString substringWithRange:[result rangeAtIndex:1]];
+                                  [friendsIds addObject:friendId];
+                              }];
+        //Return success and the friend ids array
+        self.callback(YES, friendsIds);
+    }
 }
 
 @end
