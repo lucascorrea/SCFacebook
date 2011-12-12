@@ -457,13 +457,17 @@ static SCFacebook * _scFacebook = nil;
 }
 
 - (void)dialogCompleteWithUrl:(NSURL *)url {
-    //If completed the request successfully
-    if ([url.absoluteString hasPrefix:@"fbconnect://success?request="]) {
+    //Check for request dialog response
+    //format:
+    // to[0]=FRIEND_0_ID&to[1]=FRIEND_1_ID ... &to[n]=FRIEND_N_ID
+    NSRegularExpression * requestDialogRegExp = [NSRegularExpression regularExpressionWithPattern:@"fbconnect:\\/\\/success\\?request=\\d+(&to%5B\\d+%5D=\\d+)*" options:NSRegularExpressionCaseInsensitive error:nil];
+    if ([requestDialogRegExp numberOfMatchesInString:url.absoluteString
+                                             options:0 
+                                               range:NSMakeRange(0, url.absoluteString.length)] == 1) {
         NSMutableArray * friendsIds = [NSMutableArray array];
-        NSError * error;
+        
         //Extract the friend ids
-        //format to[0]=FRIEND_0_ID&to[1]=FRIEND_1_ID ... &to[n]=FRIEND_N_ID
-        NSRegularExpression * regExp = [NSRegularExpression regularExpressionWithPattern:@"%5B\\d+%5D=(\\d+)" options:NSRegularExpressionCaseInsensitive error:&error];
+        NSRegularExpression * regExp = [NSRegularExpression regularExpressionWithPattern:@"%5B\\d+%5D=(\\d+)" options:NSRegularExpressionCaseInsensitive error:nil];
         [regExp enumerateMatchesInString:url.absoluteString
                                  options:0
                                    range:NSMakeRange(0, url.absoluteString.length)
@@ -471,6 +475,7 @@ static SCFacebook * _scFacebook = nil;
                                   NSString * friendId = [url.absoluteString substringWithRange:[result rangeAtIndex:1]];
                                   [friendsIds addObject:friendId];
                               }];
+        
         //Return success and the friend ids array
         self.callback(YES, friendsIds);
     }
