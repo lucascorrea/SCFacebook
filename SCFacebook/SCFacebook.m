@@ -274,6 +274,20 @@ static SCFacebook * _scFacebook = nil;
     self.callback = callBack;
 }
 
+- (void)_inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack {
+    if (_message == nil || _message.length == 0 || _message.length > 255) {
+        [NSException raise:@"Invalid message value" 
+                    format:@"message cannot be nil, empty or longer than 255 characters"];
+    }
+    
+    NSMutableDictionary * params = [NSMutableDictionary dictionaryWithObject:_message 
+                                                                      forKey:@"message"];
+
+    [_facebook dialog:@"apprequests"
+           andParams:params
+         andDelegate:self];
+    self.callback = callBack;
+}
 
 #pragma mark - 
 #pragma mark Public Methods Class
@@ -318,6 +332,9 @@ static SCFacebook * _scFacebook = nil;
     [[SCFacebook shared] _myFeedCallBack:callBack];
 }
 
++(void)inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack{
+    [[SCFacebook shared] _inviteFriendsWithMessage:_message callBack:callBack];
+}
 #pragma mark - 
 #pragma mark FBSessionDelegate Methods
 
@@ -438,6 +455,31 @@ static SCFacebook * _scFacebook = nil;
 - (void)dialog:(FBDialog*)dialog didFailWithError:(NSError *)error {
     NSLog(@"Error message: %@", [[error userInfo] objectForKey:@"error_msg"]);
     self.callback(NO, [[error userInfo] objectForKey:@"error_msg"]);
+}
+
+- (void)dialogCompleteWithUrl:(NSURL *)url {
+    //Check for request dialog response
+    //format:
+    // to[0]=FRIEND_0_ID&to[1]=FRIEND_1_ID ... &to[n]=FRIEND_N_ID
+    NSRegularExpression * requestDialogRegExp = [NSRegularExpression regularExpressionWithPattern:@"fbconnect:\\/\\/success\\?request=\\d+(&to%5B\\d+%5D=\\d+)*" options:NSRegularExpressionCaseInsensitive error:nil];
+    if ([requestDialogRegExp numberOfMatchesInString:url.absoluteString
+                                             options:0 
+                                               range:NSMakeRange(0, url.absoluteString.length)] == 1) {
+        NSMutableArray * friendsIds = [NSMutableArray array];
+        
+        //Extract the friend ids
+        NSRegularExpression * regExp = [NSRegularExpression regularExpressionWithPattern:@"%5B\\d+%5D=(\\d+)" options:NSRegularExpressionCaseInsensitive error:nil];
+        [regExp enumerateMatchesInString:url.absoluteString
+                                 options:0
+                                   range:NSMakeRange(0, url.absoluteString.length)
+                              usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                                  NSString * friendId = [url.absoluteString substringWithRange:[result rangeAtIndex:1]];
+                                  [friendsIds addObject:friendId];
+                              }];
+        
+        //Return success and the friend ids array
+        self.callback(YES, friendsIds);
+    }
 }
 
 @end
