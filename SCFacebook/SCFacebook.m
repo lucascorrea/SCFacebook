@@ -274,11 +274,11 @@ static SCFacebook * _scFacebook = nil;
     self.callback = callBack;
 }
 
-- (void)_inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack {
+- (void)_inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack {
     NSMutableDictionary * params = nil;
-    if (message) {
+    if (_message) {
         params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                  message,  @"message",
+                  _message,  @"message",
                   nil];
     }
 
@@ -331,8 +331,8 @@ static SCFacebook * _scFacebook = nil;
     [[SCFacebook shared] _myFeedCallBack:callBack];
 }
 
-+(void)inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack{
-    [[SCFacebook shared] _inviteFriendsWithMessage:message callBack:callBack];
++(void)inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack{
+    [[SCFacebook shared] _inviteFriendsWithMessage:_message callBack:callBack];
 }
 #pragma mark - 
 #pragma mark FBSessionDelegate Methods
