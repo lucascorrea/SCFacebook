@@ -275,9 +275,9 @@ static SCFacebook * _scFacebook = nil;
 }
 
 - (void)_inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack {
-    if (_message == nil || _message.length == 0) {
-        [NSException raise:@"Invalid _message value" 
-                    format:@"_message cannot be empty or nil"];
+    if (_message == nil || _message.length == 0 || _message.length > 255) {
+        [NSException raise:@"Invalid message value" 
+                    format:@"message cannot be nil, empty or longer than 255 characters"];
     }
     
     NSMutableDictionary * params = [NSMutableDictionary dictionaryWithObject:_message 
