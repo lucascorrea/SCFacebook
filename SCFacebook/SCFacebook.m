@@ -275,10 +275,13 @@ static SCFacebook * _scFacebook = nil;
 }
 
 - (void)_inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack {
-    NSMutableDictionary * params = [NSMutableDictionary dictionary];
-    if (_message) {
-        [params setObject:_message forKey:@"message"];
+    if (_message == nil || _message.length == 0) {
+        [NSException raise:@"Invalid _message value" 
+                    format:@"_message cannot be emtpy or nil"];
     }
+    
+    NSMutableDictionary * params = [NSMutableDictionary dictionaryWithObject:_message 
+                                                                      forKey:@"message"];
 
     [_facebook dialog:@"apprequests"
            andParams:params
