@@ -61,6 +61,8 @@ There is 09 methods:
 	+(void)feedPostWithPhoto:(UIImage*)_photo caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack;
 	
 	+(void)myFeedCallBack:(SCFacebookCallback)callBack;
+	
+	+(void)inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack;
 
 
 Example Usage
