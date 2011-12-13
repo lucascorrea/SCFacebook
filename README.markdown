@@ -82,6 +82,20 @@ To use the component is very easy. Import the header for your class.
 	    	}];
 	}
 
+	- (IBAction)publishYourWallLink:(id)sender {
+		[SCFacebook feedPostWithLinkPath:@"http://www.lucascorrea.com" caption:@"Portfolio" callBack:^(BOOL success, id result) {
+           		if (success) {
+	        	}
+		}];
+	}
+
+	- (IBAction)publishYourWallMessage:(id)sender {
+		[SCFacebook feedPostWithMessage:@"This is message" callBack:^(BOOL success, id result) {
+	   		if (success) {
+	        	}
+		}];
+	}
+
 License
 =============
 
