@@ -42,7 +42,7 @@ Now in it's `AppDelegate` need to add two methods
 Methods
 ===========
 
-There is 09 methods:
+There is 10 methods:
 
 	+(void)loginCallBack:(SCFacebookCallback)callBack;
 	
