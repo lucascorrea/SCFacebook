@@ -87,7 +87,9 @@
 }
 
 #pragma mark - Methods
--(void)getUserInfo{
+
+- (void)getUserInfo
+{
     loadingView.hidden = NO;
     
     [SCFacebook getUserFQL:FQL_USER_STANDARD callBack:^(BOOL success, id result) {
@@ -113,8 +115,9 @@
 
 
 #pragma mark - Button Action
-- (IBAction)login:(id)sender {
-    
+
+- (IBAction)login:(id)sender 
+{    
     loadingView.hidden = NO;
     
     [SCFacebook loginCallBack:^(BOOL success, id result) {
@@ -126,8 +129,8 @@
     }];
 }
 
-- (IBAction)logout:(id)sender {
-    
+- (IBAction)logout:(id)sender 
+{    
     [SCFacebook logoutCallBack:^(BOOL success, id result) {
         if (success) {
             nameLabel.text = @"Name";
@@ -140,12 +143,13 @@
     }];
 }
 
-- (IBAction)getUserInfo:(id)sender {
+- (IBAction)getUserInfo:(id)sender 
+{
     [self getUserInfo];
 }
 
-- (IBAction)getFriends:(id)sender {
-    
+- (IBAction)getFriends:(id)sender 
+{    
     loadingView.hidden = NO;
     
     [SCFacebook getUserFriendsCallBack:^(BOOL success, id result) {
@@ -161,8 +165,8 @@
     }];
 }
 
-- (IBAction)publishYourWall:(id)sender {
-
+- (IBAction)publishYourWall:(id)sender 
+{
     UIActionSheet *sheet = [[UIActionSheet alloc]
                             initWithTitle:@"Option Publish"
                             delegate:self
@@ -174,8 +178,13 @@
 	[sheet release];
 }
 
+
+
+
 #pragma mark - UIActionSheetDelegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex 
+{
 	if (buttonIndex == actionSheet.destructiveButtonIndex) { return; }
     
     switch (buttonIndex) {
