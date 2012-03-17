@@ -1,0 +1,6 @@
+[submodule "SCFacebook/ExternalFrameworks/facebook-ios-sdk"]
+	path = SCFacebook/ExternalFrameworks/facebook-ios-sdk
+	url = https://github.com/facebook/facebook-ios-sdk.git
+[submodule "SCFacebook/ExternalFrameworks/EGOImageLoading"]
+	path = SCFacebook/ExternalFrameworks/EGOImageLoading
+	url = https://github.com/enormego/EGOImageLoading.git
