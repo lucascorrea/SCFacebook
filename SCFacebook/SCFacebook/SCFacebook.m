@@ -473,7 +473,7 @@ static SCFacebook * _scFacebook = nil;
     NSLog(@"Err message: %@", [[error userInfo] objectForKey:@"message"]);
     NSLog(@"Err code: %d", [error code]);
     
-    self.callback(YES,[[error userInfo] objectForKey:@"message"]);
+    self.callback(NO,[[error userInfo] objectForKey:@"message"]);
     
     // Show logged out state if:
     // 1. the app is no longer authorized
