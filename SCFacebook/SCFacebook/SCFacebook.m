@@ -239,7 +239,8 @@ static SCFacebook * _scFacebook = nil;
     NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
     //Need to provide POST parameters to the Facebook SDK for the specific post type
     NSString *graphPath = @"me/feed";
-    
+    [params setObject:kAppId forKey:@"api_key"];
+
     switch (postType) {
         case FBPostTypeLink:{
             [params setObject:@"link" forKey:@"type"];
@@ -365,7 +366,30 @@ static SCFacebook * _scFacebook = nil;
     [[SCFacebook shared] _inviteFriendsWithMessage:_message callBack:callBack];
 }
 
++(void)feedPostWithParams:(NSMutableDictionary *)params showDialog:(BOOL)dialog callBack:(SCFacebookCallback)callBack {
+    [[SCFacebook shared] _feedPostWithParams:params showDialog:dialog callBack:callBack];
+}
 
+-(void)_feedPostWithParams:(NSMutableDictionary *)params showDialog:(BOOL)dialog callBack:(SCFacebookCallback)callBack {
+    if (![_facebook isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        [callBack release];
+        return;
+    }
+    if (params.count == 0) {
+        callBack(NO,@"No parameters passed in");
+        [callBack release];
+        return;
+    }
+    if(dialog){
+        [_facebook dialog:@"feed" andParams:params andDelegate:self];
+        self.callback = callBack;
+    }else{
+        [_facebook requestWithGraphPath:@"me/feed" andParams:params andHttpMethod:@"POST" andDelegate:self];     
+        self.callback = callBack;
+    }
+    
+}
 
 
 #pragma mark - 

@@ -32,8 +32,8 @@
 #endif
 
 #define OPEN_URL @"OPEN_URL"
-#define FQL_USER_STANDARD @"uid, name, email, birthday_date, about_me, pic"
-#define PERMISSIONS @"user_about_me",@"user_birthday",@"email", @"user_photos", @"publish_stream"
+#define FQL_USER_STANDARD @""
+#define PERMISSIONS @"publish_stream"
 
 
 #define Alert(title,msg)  [[[[UIAlertView alloc] initWithTitle:title message:msg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] autorelease] show];
@@ -68,5 +68,6 @@ typedef enum {
 + (void)feedPostWithPhoto:(UIImage*)_photo caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack;
 + (void)myFeedCallBack:(SCFacebookCallback)callBack;
 + (void)inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack;
++(void)feedPostWithParams:(NSMutableDictionary *)params showDialog:(BOOL)dialog callBack:(SCFacebookCallback)callBack;
 
 @end
