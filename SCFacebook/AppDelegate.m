@@ -53,14 +53,19 @@
     [loadingView release];
 	loadingView.hidden = YES;
     
+    
+    //Your application App ID/API Key Facebook
+    [SCFacebook initWithAppId:@"140422319335414"];
+    
     return YES;
 }
 
 
 
 
+#pragma mark - 
+#pragma mark - SCFacebook Handle
 
-//SCFacebook Implementation
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     [[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
     return YES;

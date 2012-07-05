@@ -59,7 +59,9 @@
 }
 
 
+#pragma mark -
 #pragma mark - Table view data source
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 80.0;
@@ -87,9 +89,13 @@
     
     cell.nameLabel.text = [[self.friendsArray objectAtIndex:indexPath.row] objectForKey:@"name"];
     cell.photoImageView.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture",[[self.friendsArray objectAtIndex:indexPath.row] objectForKey:@"id"]]];
-    
+    cell.selectionStyle = UITableViewCellSelectionStyleGray;
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 
 @end

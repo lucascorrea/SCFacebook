@@ -74,7 +74,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return NO;
+    return (interfaceOrientation == UIInterfaceOrientationPortrait) || (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
 }
 
 - (void)dealloc {
@@ -105,9 +105,7 @@
             
             photoImageView.imageURL = [NSURL URLWithString:[result objectForKey:@"pic"]];
         }else{
-            
             loadingView.hidden = YES;
-            
             Alert(@"Alert", result);
         }
     }];

@@ -8,9 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FriendsViewControler : UIViewController{
-    
-}
+@interface FriendsViewControler : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, retain) NSMutableArray *friendsArray;
 
