@@ -12,31 +12,34 @@ Getting Started
 
 Now we need to copy the `SCFacebook.h` `SCFacebook.m` for your project.
 
-In the class `SCFacebook.h` need to add your `kAppId` Facebook as example:
- 
-	#import "Facebook.h"
-	#define kAppId @"YOUR_APP_ID"
-	
-	@interface SCFacebook : NSObject <FBSessionDelegate, FBRequestDelegate, FBDialogDelegate>{
-
 Once you have set up the `URL Scheme` as image below:
 
 [![]( Https://developers.facebook.com/attachment/ios_config.png)]
 
-Now in it's `AppDelegate` need to add two methods
+Now in it's `AppDelegate` need to add two methods and add APP ID
 
 	#import "SCFacebook.h"
 	@implementation AppDelegate
 
-	//SCFacebook Implementation
+	- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+	{       
+    		//Your application App ID/API Key Facebook
+    		[SCFacebook initWithAppId:@"140422319335414"];
+    
+    		return YES;
+	}
+
+
+	#pragma mark - 
+	#pragma mark - SCFacebook Handle
 	- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    	[[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
-    	return YES;
+    		[[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
+    		return YES;
 	}
 
 	- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    	[[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
-    	return YES;
+    		[[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
+    		return YES;
 	}
 	
 Methods
@@ -101,7 +104,7 @@ License
 
 SCFacebook is licensed under the MIT License:
 
-Copyright (c) 2011 Lucas Correa (http://www.lucascorrea.com/)
+Copyright (c) 2012 Lucas Correa (http://www.lucascorrea.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
