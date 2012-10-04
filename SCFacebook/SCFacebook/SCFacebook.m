@@ -458,7 +458,7 @@
         }
     } else {
         NSArray *resultData = [result objectForKey:@"data"];
-        if ([resultData count] > 0) {
+        if ([resultData count] > 0 && resultData != nil) {
             self.callback(YES,resultData);
         }else  if ([result isKindOfClass:[NSDictionary class]]) {
             self.callback(YES,@"Publish Successfully");
