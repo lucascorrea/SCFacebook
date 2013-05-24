@@ -361,6 +361,12 @@
     [[SCFacebook shared] _feedPostWithLinkPath:nil caption:_caption message:nil photo:_photo dialog:NO callBack:callBack];
 }
 
++ (void)feedPostWithPhoto:(UIImage *)_photo linkPath:(NSString *)_url caption:(NSString *)_caption callBack:(SCFacebookCallback)callBack
+{
+    [SCFacebook shared].postType = FBPostTypePhoto;
+    [[SCFacebook shared] _feedPostWithLinkPath:_url caption:_caption message:nil photo:_photo dialog:NO callBack:callBack];
+}
+
 + (void)myFeedCallBack:(SCFacebookCallback)callBack
 {
     [[SCFacebook shared] _myFeedCallBack:callBack];
