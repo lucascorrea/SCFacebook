@@ -14,7 +14,7 @@ Now we need to copy the `SCFacebook.h` `SCFacebook.m` for your project.
 
 Once you have set up the `URL Scheme` as image below:
 
-[![]( Https://developers.facebook.com/attachment/ios_config.png)]
+[![]( https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xpa1/t39.2178-6/851576_481252288614868_57148904_n.png)]
 
 Now in it's `AppDelegate` need to add two methods and add APP ID
 
