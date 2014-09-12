@@ -3,7 +3,7 @@
 //  SCFacebook
 //
 //  Created by Lucas Correa on 23/11/11.
-//  Copyright (c) 2012 Siriuscode Solutions. All rights reserved.
+//  Copyright (c) 2014 Siriuscode Solutions. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,12 @@
 //  THE SOFTWARE.
 
 #import "SCFacebook.h"
-#import "SBJSON.h"
 
 
 @interface SCFacebook()
 
-@property (copy, nonatomic) SCFacebookCallback callback;
-@property (copy, nonatomic) NSString *appId;
+//@property (copy, nonatomic) SCFacebookCallback callBack;
+//@property (copy, nonatomic) NSDictionary *userInfo;
 
 + (SCFacebook *)shared;
 
@@ -40,223 +39,200 @@
 
 @implementation SCFacebook
 
-@synthesize callback = _callback;
-@synthesize postType = _postType;
-@synthesize appId = _appId;
-
 
 #pragma mark -
 #pragma mark - Singleton
 
-+ (SCFacebook *)shared 
-{    
-    static SCFacebook *_scFacebook = nil;
++ (SCFacebook *)shared
+{
+    static SCFacebook *scFacebook = nil;
     
     @synchronized (self){
         
         static dispatch_once_t pred;
         dispatch_once(&pred, ^{
-            _scFacebook = [[SCFacebook alloc] init];
+            scFacebook = [[SCFacebook alloc] init];
         });
     }
     
-    return _scFacebook;
+    return scFacebook;
 }
 
 
+#pragma mark -
+#pragma mark - NSDefaults
+
+- (void)saveDefaultValue:(id)value forKey:(NSString *)forKey
+{
+    [[NSUserDefaults standardUserDefaults] setObject:value forKey:forKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+
+- (id)defaultValueForKey:(NSString *)key
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:key];
+}
+
+#pragma mark -
+#pragma mark - Property
+
+//- (NSDictionary *)userInfo
+//{
+//    return [self defaultValueForKey:@"userInfo"];
+//}
 
 #pragma mark -
 #pragma mark - Private Methods
 
-- (void)initWithAppID:(NSString *)appId
+- (void)initWithPermissions:(NSArray *)permissions
 {
-    self.appId = appId;
-    // Initialize Facebook
-    _facebook = [[Facebook alloc] initWithAppId:self.appId andDelegate:self];
-    
-    // Initialize user permissions
-    _userPermissions = [[NSMutableDictionary alloc] initWithCapacity:1];
-    
-    // Check and retrieve authorization information
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults objectForKey:@"FBAccessTokenKey"] 
-        && [defaults objectForKey:@"FBExpirationDateKey"]) {
-        _facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
-        _facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
-    }
-    if (![_facebook isSessionValid]) {
-        [self loggedOut:NO];
-    } 
+    self.permissions = permissions;
     
     //Notification
     [[NSNotificationCenter defaultCenter] addObserverForName:OPEN_URL object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-        NSURL *url = (NSURL*)[note object];
-        [self handleOpenURL:url];
+        NSDictionary *dic = (NSDictionary *)[note userInfo];
+        [self handleOpenURL:dic[@"url"] sourceApplication:dic[@"sourceApplication"]];
     }];
+    
+    //    [self updateSession];
 }
 
+//- (void)updateSession
+//{
+//    if (!self.session.isOpen){
+//        self.session = [[FBSession alloc] initWithPermissions:self.permissions];
+//        if (self.session.state == FBSessionStateCreatedTokenLoaded){
+//            [self.session openWithCompletionHandler:^(FBSession *session,
+//                                                      FBSessionState status,
+//                                                      NSError *error) {
+//                self.session = session;
+//            }];
+//        }
+//    }
+//}
 
-- (BOOL)handleOpenURL:(NSURL *)url 
+
+- (BOOL)handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
 {
-    return [_facebook handleOpenURL:url];
+    BOOL wasHandled = [FBAppCall handleOpenURL:url
+                             sourceApplication:sourceApplication];
+    return wasHandled;
 }
 
-
-- (void)loggedOut:(BOOL)clearInfo 
+- (void)loggedOut:(BOOL)clearInfo
 {
-    // Remove saved authorization information if it exists and it is
-    // ok to clear it (logout, session invalid, app unauthorized)
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (clearInfo && [defaults objectForKey:@"FBAccessTokenKey"]) {
-        [defaults removeObjectForKey:@"FBAccessTokenKey"];
-        [defaults removeObjectForKey:@"FBExpirationDateKey"];
-        [defaults synchronize];
-        
-        // Nil out the session variables to prevent
-        // the app from thinking there is a valid session
-        if (nil != [_facebook accessToken]) {
-            _facebook.accessToken = nil;
-        }
-        if (nil != [_facebook expirationDate]) {
-            _facebook.expirationDate = nil;
-        }
-    }    
+    
 }
 
 - (BOOL)isSessionValid
 {
-    return [_facebook isSessionValid];
+    if (!FBSession.activeSession.isOpen){
+        
+        if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded){
+            [FBSession.activeSession openWithCompletionHandler:^(FBSession *session,
+                                                                 FBSessionState status,
+                                                                 NSError *error) {
+                FBSession.activeSession = session;
+            }];
+        }
+    }
+    
+    return FBSession.activeSession.isOpen;
 }
 
-- (void)_loginCallBack:(SCFacebookCallback)callBack
+- (void)loginCallBack:(SCFacebookCallback)callBack
 {
-    if (!self.appId || [self.appId length] == 0) {
-        NSString *error = @"Missing your application App ID/API Key Facebook. You cannot run the app until you provide this in the code.";
+    [FBSession openActiveSessionWithReadPermissions:self.permissions allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
         
-        Alert(@"ERROR", error)
-        callBack(NO,error);
-        [callBack release];
-        return;
-    }else{
-        
-        // Now check that the URL scheme fb[app_id]://authorize is in the .plist and can
-        // be opened, doing a simple check without local app id factored in here
-        NSString *url = [NSString stringWithFormat:@"fb%@://authorize",self.appId];
-        BOOL bSchemeInPlist = NO; // find out if the sceme is in the plist file.
-        NSArray* aBundleURLTypes = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleURLTypes"];
-        if ([aBundleURLTypes isKindOfClass:[NSArray class]] && 
-            ([aBundleURLTypes count] > 0)) {
-            NSDictionary* aBundleURLTypes0 = [aBundleURLTypes objectAtIndex:0];
-            if ([aBundleURLTypes0 isKindOfClass:[NSDictionary class]]) {
-                NSArray* aBundleURLSchemes = [aBundleURLTypes0 objectForKey:@"CFBundleURLSchemes"];
-                if ([aBundleURLSchemes isKindOfClass:[NSArray class]] &&
-                    ([aBundleURLSchemes count] > 0)) {
-                    NSString *scheme = [aBundleURLSchemes objectAtIndex:0];
-                    if ([scheme isKindOfClass:[NSString class]] && 
-                        [url hasPrefix:scheme]) {
-                        bSchemeInPlist = YES;
+        if (status == FBSessionStateOpen) {
+            
+            FBRequest *fbRequest = [FBRequest requestForMe];
+            [fbRequest setSession:session];
+            
+            [fbRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error){
+                NSMutableDictionary *userInfo = nil;
+                if( [result isKindOfClass:[NSDictionary class]] ){
+                    userInfo = (NSMutableDictionary *)result;
+                    if( [userInfo count] > 0 ){
+                        [userInfo setObject:session.accessTokenData.accessToken forKey:@"accessToken"];
                     }
                 }
-            }
+                if(callBack){
+                    callBack(!error, userInfo);
+                }
+            }];
         }
-        // Check if the authorization callback will work
-        BOOL bCanOpenUrl = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString: url]];
-        if (!bSchemeInPlist || !bCanOpenUrl) {
-            NSString *error = @"Invalid or missing URL scheme. You cannot run the app until you set up a valid URL scheme in your .plist.";
-            
-            Alert(@"ERROR", error)
-            callBack(NO,error);
-            [callBack release];
-            return;
-        }
-        
-        // Check and retrieve authorization information
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        if ([defaults objectForKey:@"FBAccessTokenKey"] 
-            && [defaults objectForKey:@"FBExpirationDateKey"]) {
-            _facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
-            _facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
-        }
-        if (![_facebook isSessionValid]) {
-            _facebook.sessionDelegate = self;
-            
-            //Permissions
-            // http://developers.facebook.com/docs/reference/api/permissions/
-            
-            _permissions  = [NSArray arrayWithObjects:PERMISSIONS, nil];
-            [_facebook authorize:_permissions];
-            
-            self.callback = callBack;
-        } 
-        else {
-            callBack(YES,@"Logged");
-            [callBack release];
-        }
-    }
+    }];
 }
 
-- (void)_logoutCallBack:(SCFacebookCallback)callBack
+- (void)logoutCallBack:(SCFacebookCallback)callBack
 {
-    self.callback = callBack;
-    [_facebook logout:self];
-}
-
-
-- (void)_getUserFQL:(NSString *)fql callBack:(SCFacebookCallback)callBack
-{    
-    if (![_facebook isSessionValid]) {
-        callBack(NO, @"Not logged in");
-        [callBack release];
-        return;
+    if (FBSession.activeSession.isOpen){
+        [FBSession.activeSession closeAndClearTokenInformation];
+        [FBSession setActiveSession:nil];
     }
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"SELECT %@ FROM user WHERE uid=me()",fql], @"query",nil];
-    [_facebook requestWithMethodName:@"fql.query" andParams:params andHttpMethod:@"POST" andDelegate:self];
-    self.callback = callBack;
+    [self saveDefaultValue:nil forKey:@"userInfo"];
+    
+    NSHTTPCookieStorage* cookies = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray* facebookCookies = [cookies cookiesForURL:[NSURL URLWithString:@"https://facebook.com/"]];
+    
+    for (NSHTTPCookie* cookie in facebookCookies) {
+        [cookies deleteCookie:cookie];
+    }
+    
+    callBack(YES, @"Logout successfully");
 }
 
-- (void)_getUserFriendsCallBack:(SCFacebookCallback)callBack
+- (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack
 {
-    if (![_facebook isSessionValid]) {
+    if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
-        [callBack release];
         return;
     }
     
-    [_facebook requestWithGraphPath:@"me/friends" andDelegate:self];
-    self.callback = callBack;
+    [self graphFacebookForMethodGET:@"me" params:@{@"fields" : fields} callBack:callBack];
 }
 
 
-
-- (void)_feedPostWithLinkPath:(NSString *)_url caption:(NSString *)_caption message:(NSString *)_message photo:(UIImage *)_photo dialog:(BOOL)_dialog callBack:(SCFacebookCallback)callBack
-{    
-    if (![_facebook isSessionValid]) {
+- (void)getUserFriendsCallBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
-        [callBack release];
         return;
     }
     
-    NSMutableDictionary *params = [[[NSMutableDictionary alloc] init] autorelease];
+    [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        callBack(!error, result[@"data"]);
+    }];
+}
+
+- (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     //Need to provide POST parameters to the Facebook SDK for the specific post type
     NSString *graphPath = @"me/feed";
     
     switch (self.postType) {
         case FBPostTypeLink:{
-            [params setObject:@"link" forKey:@"type"];
-            [params setObject:_url forKey:@"link"];
-            [params setObject:_caption forKey:@"description"];
+            [params setObject:url forKey:@"link"];
+            [params setObject:caption forKey:@"description"];
             break;
         }
         case FBPostTypeStatus:{
-            [params setObject:@"status" forKey:@"type"];
-            [params setObject:_message forKey:@"message"];
+            [params setObject:message forKey:@"message"];
             break;
         }
         case FBPostTypePhoto:{
             graphPath = @"me/photos";
-            [params setObject:_photo forKey:@"source"];
-            [params setObject:_caption forKey:@"message"];
+            [params setObject:UIImagePNGRepresentation(photo) forKey:@"source"];
+            [params setObject:caption forKey:@"message"];
             break;
         }
             
@@ -264,282 +240,291 @@
             break;
     }
     
-    if(_dialog){
-        [_facebook dialog:@"feed" andParams:params andDelegate:self];
-        self.callback = callBack;
-    }else{
-        [_facebook requestWithGraphPath:graphPath andParams:params andHttpMethod:@"POST" andDelegate:self];     
-        self.callback = callBack;
-    }
+    
+    [self graphFacebookForMethodPOST:graphPath params:params callBack:callBack];
 }
 
-- (void)_myFeedCallBack:(SCFacebookCallback)callBack
-{    
-    if (![_facebook isSessionValid]) {
+- (void)myFeedCallBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
-        [callBack release];
         return;
     }
     
-    [_facebook requestWithGraphPath:@"me/feed" andDelegate:self];     
-    self.callback = callBack;
+    [self graphFacebookForMethodPOST:@"me/feed" params:nil callBack:callBack];
 }
 
-- (void)_inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack 
+- (void)inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack
 {
-    if (_message == nil || _message.length == 0 || _message.length > 255) {
-        [NSException raise:@"Invalid message value" 
-                    format:@"message cannot be nil, empty or longer than 255 characters"];
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
     }
     
-    NSMutableDictionary * params = [NSMutableDictionary dictionaryWithObject:_message 
-                                                                      forKey:@"message"];
-
-    [_facebook dialog:@"apprequests"
-           andParams:params
-         andDelegate:self];
-    self.callback = callBack;
+    [FBWebDialogs
+     presentRequestsDialogModallyWithSession:nil
+     message:message
+     title:nil
+     parameters:nil
+     handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+         if (error) {
+             // Error launching the dialog or sending the request.
+             callBack(NO, @"Error sending request.");
+         } else {
+             if (result == FBWebDialogResultDialogNotCompleted) {
+                 // User clicked the "x" icon
+                 callBack(NO, @"User canceled request.");
+             } else {
+                 callBack(YES, @"Send invite");
+             }
+         }
+     }];
 }
 
-
-
-
-#pragma mark - 
-#pragma mark - Public Methods
-
-+ (void)initWithAppId:(NSString *)appId
+- (void)userAccountsCallBack:(SCFacebookCallback)callBack
 {
-	[[SCFacebook shared] initWithAppID:appId];
-}
-
-+(BOOL)isSessionValid
-{
-    return [[SCFacebook shared] isSessionValid];   
-}
-
-+ (void)loginCallBack:(SCFacebookCallback)callBack
-{
-	[[SCFacebook shared] _loginCallBack:callBack];
-}
-
-+ (void)logoutCallBack:(SCFacebookCallback)callBack
-{
-	[[SCFacebook shared] _logoutCallBack:callBack];
-}
-
-+ (void)getUserFQL:(NSString *)fql callBack:(SCFacebookCallback)callBack
-{
-	[[SCFacebook shared] _getUserFQL:fql callBack:callBack];
-}
-
-+ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack
-{
-	[[SCFacebook shared] _getUserFriendsCallBack:callBack];
-}
-
-+ (void)feedPostWithLinkPath:(NSString *)_url caption:(NSString *)_caption callBack:(SCFacebookCallback)callBack
-{
-    [SCFacebook shared].postType = FBPostTypeLink;
-    [[SCFacebook shared] _feedPostWithLinkPath:_url caption:_caption message:nil photo:nil dialog:NO callBack:callBack];
-}
-
-+ (void)feedPostWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack
-{
-    [SCFacebook shared].postType = FBPostTypeStatus;
-    [[SCFacebook shared] _feedPostWithLinkPath:nil caption:nil message:_message photo:nil dialog:NO callBack:callBack];    
-}
-
-+ (void)feedPostWithMessageDialogCallBack:(SCFacebookCallback)callBack
-{
-    [SCFacebook shared].postType = FBPostTypeStatus;
-    [[SCFacebook shared] _feedPostWithLinkPath:nil caption:nil message:@"" photo:nil dialog:YES callBack:callBack];    
-}
-
-+ (void)feedPostWithPhoto:(UIImage *)_photo caption:(NSString *)_caption callBack:(SCFacebookCallback)callBack
-{
-    [SCFacebook shared].postType = FBPostTypePhoto;
-    [[SCFacebook shared] _feedPostWithLinkPath:nil caption:_caption message:nil photo:_photo dialog:NO callBack:callBack];
-}
-
-+ (void)myFeedCallBack:(SCFacebookCallback)callBack
-{
-    [[SCFacebook shared] _myFeedCallBack:callBack];
-}
-
-+ (void)inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack
-{
-    [[SCFacebook shared] _inviteFriendsWithMessage:_message callBack:callBack];
-}
-
-
-
-
-#pragma mark - 
-#pragma mark - FBSessionDelegate Methods
-
-/**
- * Called when the user has logged in successfully.
- */
-- (void)fbDidLogin 
-{
-    // Save authorization information
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[_facebook accessToken] forKey:@"FBAccessTokenKey"];
-    [defaults setObject:[_facebook expirationDate] forKey:@"FBExpirationDateKey"];
-    [defaults synchronize];
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
     
-    self.callback(YES,@"Success");
+    [self graphFacebookForMethodGET:@"me/accounts" params:nil callBack:callBack];
 }
 
-/**
- * Called when the user canceled the authorization dialog.
- */
-- (void)fbDidNotLogin:(BOOL)cancelled 
+- (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject callBack:(SCFacebookCallback)callBack
 {
-    NSLog(@"did not login");
-    self.callback(NO,@"Not Login");
-}
-
-/**
- * Called when the request logout has succeeded.
- */
-- (void)fbDidLogout 
-{
-    [self loggedOut:YES];
-    self.callback(YES,@"Logout successfully");
-}
-
-- (void)fbDidExtendToken:(NSString *)accessToken
-               expiresAt:(NSDate *)expiresAt
-{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
     
+    // Post custom object
+    [FBRequestConnection startForPostOpenGraphObject:openGraphObject completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if(!error) {
+            // get the object ID for the Open Graph object that is now stored in the Object API
+            NSString *objectId = [result objectForKey:@"id"];
+            NSLog(@"object id: %@", objectId);
+            
+            // create an Open Graph action
+            id<FBOpenGraphAction> action = (id<FBOpenGraphAction>)[FBGraphObject graphObject];
+            [action setObject:objectId forKey:@"graphtest"];
+            
+            // create action referencing user owned object
+            [FBRequestConnection startForPostWithGraphPath:@"/me/fblucascorreatest:test" graphObject:action completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                if(error) {
+                    // An error occurred, we need to handle the error
+                    // See: https://developers.facebook.com/docs/ios/errors
+                    callBack(NO, [NSString stringWithFormat:@"Encountered an error posting to Open Graph: %@", error.description]);
+                } else {
+                    callBack(YES, [NSString stringWithFormat:@"OG story posted, story id: %@", result[@"id"]]);
+                }
+            }];
+            
+        } else {
+            // An error occurred, we need to handle the error
+            // See: https://developers.facebook.com/docs/ios/errors
+            callBack(NO, [NSString stringWithFormat:@"Encountered an error posting to Open Graph: %@", error.description]);
+        }
+    }];
 }
 
-
-- (void)fbSessionInvalidated
+- (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject withImage:(UIImage *)image callBack:(SCFacebookCallback)callBack
 {
-    
+    // stage an image
+    [FBRequestConnection startForUploadStagingResourceWithImage:image completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if(!error) {
+            NSLog(@"Successfuly staged image with staged URI: %@", [result objectForKey:@"uri"]);
+
+            // for og:image we assign the uri of the image that we just staged
+//            object[@"image"] = @[@{@"url": [result objectForKey:@"uri"], @"user_generated" : @"false" }];
+
+            openGraphObject.image = @[@{@"url": [result objectForKey:@"uri"], @"user_generated" : @"false" }];
+            
+            [self sendForPostOpenGraphObject:openGraphObject callBack:callBack];
+        }
+    }];
 }
+
+- (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack
+{
+    [FBRequestConnection startWithGraphPath:method parameters:params HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
+        if (error) {
+            NSLog(@"%@", error);
+            callBack(NO, error);
+        } else {
+            NSLog(@"%@", result);
+            callBack(YES, result);
+        }
+    }];
+}
+
+- (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack
+{
+    [FBRequestConnection startWithGraphPath:method parameters:params HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result,NSError *error) {
+        if (error) {
+            NSLog(@"%@", error);
+            callBack(NO, error);
+        } else {
+            NSLog(@"%@", result);
+            callBack(YES, result);
+        }
+    }];
+}
+
 
 
 
 
 #pragma mark -
-#pragma mark - FBRequestDelegate Methods
+#pragma mark - Public Methods
 
-/**
- * Called when the Facebook API request has returned a response. This callback
- * gives you access to the raw response. It's called before
- * (void)request:(FBRequest *)request didLoad:(id)result,
- * which is passed the parsed response object.
- */
-- (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response 
++ (void)initWithPermissions:(NSArray *)permissions
 {
-    //NSLog(@"received response");
+    [[SCFacebook shared] initWithPermissions:permissions];
 }
 
-/**
- * Called when a request returns and its response has been parsed into
- * an object. The resulting object may be a dictionary, an array, a string,
- * or a number, depending on the format of the API response. If you need access
- * to the raw response, use:
- *
- * (void)request:(FBRequest *)request
- *      didReceiveResponse:(NSURLResponse *)response
- */
-- (void)request:(FBRequest *)request didLoad:(id)result 
++(BOOL)isSessionValid
 {
-    if ([result isKindOfClass:[NSArray class]]) {
-        if ([result count] > 0) {
-            result = [result objectAtIndex:0];            
-            self.callback(YES,result);
-        }else{
-            self.callback(NO,result);
-        }
-    } else {
-        NSArray *resultData = [result objectForKey:@"data"];
-        if (resultData != nil) {
-            self.callback(YES,resultData);
-        }else  if ([result isKindOfClass:[NSDictionary class]]) {
-            self.callback(YES,@"Publish Successfully"); 
-        }else{
-            self.callback(NO,@"ERROR");
-        }
-        
-        // _userPermissions = [[result objectForKey:@"data"] objectAtIndex:0];
-    }
+    return [[SCFacebook shared] isSessionValid];
 }
 
-/**
- * Called when an error prevents the Facebook API request from completing
- * successfully.
- */
-- (void)request:(FBRequest *)request didFailWithError:(NSError *)error 
++ (void)loginCallBack:(SCFacebookCallback)callBack
 {
-    NSLog(@"Err message: %@", [[error userInfo] objectForKey:@"message"]);
-    NSLog(@"Err code: %d", [error code]);
+    [[SCFacebook shared] loginCallBack:callBack];
+}
+
++ (void)logoutCallBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] logoutCallBack:callBack];
+}
+
++ (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] getUserFields:fields callBack:callBack];
+}
+
++ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] getUserFriendsCallBack:callBack];
+}
+
++ (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption callBack:(SCFacebookCallback)callBack
+{
+    [SCFacebook shared].postType = FBPostTypeLink;
+    [[SCFacebook shared] feedPostWithLinkPath:url caption:caption message:nil photo:nil callBack:callBack];
+}
+
++ (void)feedPostWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack
+{
+    [SCFacebook shared].postType = FBPostTypeStatus;
+    [[SCFacebook shared] feedPostWithLinkPath:nil caption:nil message:message photo:nil callBack:callBack];
+}
+
++ (void)feedPostWithPhoto:(UIImage *)photo caption:(NSString *)caption callBack:(SCFacebookCallback)callBack
+{
+    [SCFacebook shared].postType = FBPostTypePhoto;
+    [[SCFacebook shared] feedPostWithLinkPath:nil caption:caption message:nil photo:photo callBack:callBack];
+}
+
++ (void)feedPostWithVideo:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
+{
     
-    self.callback(NO,[[error userInfo] objectForKey:@"message"]);
+}
+
++ (void)myFeedCallBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] myFeedCallBack:callBack];
+}
+
++ (void)inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] inviteFriendsWithMessage:message callBack:callBack];
+}
+
++ (void)userAccountsCallBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] userAccountsCallBack:callBack];
+}
+
++ (void)getPagesCallBack:(SCFacebookCallback)callBack
+{
     
-    // Show logged out state if:
-    // 1. the app is no longer authorized
-    // 2. the user logged out of Facebook from m.facebook.com or the Facebook app
-    // 3. the user has changed their password
-    if ([error code] == 190) {
-        [self loggedOut:YES];
-    }
 }
 
-
-
-#pragma mark - 
-#pragma mark - FBDialogDelegate Methods
-
-/**
- * Called when a UIServer Dialog successfully return. Using this callback
- * instead of dialogDidComplete: to properly handle successful shares/sends
- * that return ID data back.
- */
-- (void)dialogDidComplete:(FBDialog *)dialog
++ (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack
 {
-    self.callback(YES, @"Publish Successfully");
+    
 }
 
-- (void)dialogDidNotComplete:(FBDialog *)dialog 
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
 {
-    self.callback(NO, @"Dialog dismissed.");
+    
 }
 
-- (void)dialog:(FBDialog *)dialog didFailWithError:(NSError *)error 
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
 {
-    NSLog(@"Error message: %@", [[error userInfo] objectForKey:@"error_msg"]);
-    self.callback(NO, [[error userInfo] objectForKey:@"error_msg"]);
+    
 }
 
-- (void)dialogCompleteWithUrl:(NSURL *)url 
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
 {
-    //Check for request dialog response
-    //format:
-    // to[0]=FRIEND_0_ID&to[1]=FRIEND_1_ID ... &to[n]=FRIEND_N_ID
-    NSRegularExpression * requestDialogRegExp = [NSRegularExpression regularExpressionWithPattern:@"fbconnect:\\/\\/success\\?request=\\d+(&to%5B\\d+%5D=\\d+)*" options:NSRegularExpressionCaseInsensitive error:nil];
-    if ([requestDialogRegExp numberOfMatchesInString:url.absoluteString
-                                             options:0 
-                                               range:NSMakeRange(0, url.absoluteString.length)] == 1) {
-        NSMutableArray * friendsIds = [NSMutableArray array];
-        
-        //Extract the friend ids
-        NSRegularExpression * regExp = [NSRegularExpression regularExpressionWithPattern:@"%5B\\d+%5D=(\\d+)" options:NSRegularExpressionCaseInsensitive error:nil];
-        [regExp enumerateMatchesInString:url.absoluteString
-                                 options:0
-                                   range:NSMakeRange(0, url.absoluteString.length)
-                              usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-                                  NSString * friendId = [url.absoluteString substringWithRange:[result rangeAtIndex:1]];
-                                  [friendsIds addObject:friendId];
-                              }];
-        
-        //Return success and the friend ids array
-        self.callback(YES, friendsIds);
-    }
+    
 }
+
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack
+{
+    
+}
+
++ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
+{
+    
+}
+
++ (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
+{
+    
+}
+
++ (void)getAlbumsCallBack:(SCFacebookCallback)callBack
+{
+    
+}
+
++ (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
+{
+    
+}
+
++ (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack
+{
+    
+}
+
++ (void)feedPostPhotoForAlbumId:(NSString *)albumId callBack:(SCFacebookCallback)callBack
+{
+    
+}
+
++ (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] sendForPostOpenGraphObject:openGraphObject callBack:callBack];
+}
+
++ (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject withImage:(UIImage *)image callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] sendForPostOpenGraphObject:openGraphObject withImage:image callBack:callBack];
+}
+
++ (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] graphFacebookForMethodGET:method params:params callBack:callBack];
+}
+
++ (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] graphFacebookForMethodPOST:method params:params callBack:callBack];
+}
+
 
 @end

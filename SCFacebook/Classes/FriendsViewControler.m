@@ -12,8 +12,6 @@
 
 @implementation FriendsViewControler
 
-@synthesize friendsArray;
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -38,6 +36,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.title = @"Friends";
+    
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    [self.friendsArray sortUsingDescriptors:@[sortDescriptor]];
 }
 
 - (void)viewDidUnload
@@ -48,9 +49,6 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -81,14 +79,10 @@
 {
     static NSString *CellIdentifier = @"FriendCell";
     
-    FriendCell *cell = (FriendCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        UINib *nib = [UINib nibWithNibName:@"FriendCell" bundle:nil];
-        cell = [[nib instantiateWithOwner:self options:nil] objectAtIndex:0];
-    }
+    FriendCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
-    cell.nameLabel.text = [[self.friendsArray objectAtIndex:indexPath.row] objectForKey:@"name"];
-    cell.photoImageView.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture",[[self.friendsArray objectAtIndex:indexPath.row] objectForKey:@"id"]]];
+    cell.nameLabel.text = self.friendsArray[indexPath.row][@"name"];
+    cell.photoImageView.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture", self.friendsArray[indexPath.row][@"id"]]];
     cell.selectionStyle = UITableViewCellSelectionStyleGray;
     return cell;
 }

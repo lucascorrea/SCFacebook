@@ -29,3 +29,9 @@ xcuserdata*
 profile
 
 *.moved-aside
+
+Pods/
+
+Podfile.lock
+
+SCFacebook.xcworkspace

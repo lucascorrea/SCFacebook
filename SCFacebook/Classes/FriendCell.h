@@ -15,8 +15,8 @@
     IBOutlet UILabel *nameLabel;
 }
 
-@property (nonatomic,retain)  EGOImageView *photoImageView;
-@property (nonatomic,retain)  UILabel *nameLabel;
+@property (nonatomic,strong)  EGOImageView *photoImageView;
+@property (nonatomic,strong)  UILabel *nameLabel;
 
 
 @end

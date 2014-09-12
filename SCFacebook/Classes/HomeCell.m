@@ -1,22 +1,20 @@
 //
-//  FriendCell.m
+//  HomeCell.m
 //  SCFacebook
 //
-//  Created by Lucas Correa on 25/11/11.
-//  Copyright (c) 2011 SiriusCode Solutions. All rights reserved.
+//  Created by Lucas Correa on 11/11/13.
+//  Copyright (c) 2013 SiriusCode Solutions. All rights reserved.
 //
 
-#import "FriendCell.h"
+#import "HomeCell.h"
 
-@implementation FriendCell
-
-@synthesize nameLabel, photoImageView;
+@implementation HomeCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        // Initialization code
     }
     return self;
 }

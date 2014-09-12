@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  HomeController.h
 //  SCFacebook
 //
 //  Created by Lucas Correa on 23/11/11.
@@ -7,11 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EGOImageView.h"
 
-@class HomeController;
-
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
-    
-@property (strong, nonatomic) UIWindow *window;
+@interface HomeController : UIViewController <UIActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

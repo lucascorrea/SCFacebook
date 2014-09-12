@@ -3,7 +3,7 @@
 //  SCFacebook
 //
 //  Created by Lucas Correa on 23/11/11.
-//  Copyright (c) 2012 Siriuscode Solutions. All rights reserved.
+//  Copyright (c) 2014 Siriuscode Solutions. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,44 +24,93 @@
 //  THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "Facebook.h"
+#import "FacebookSDK.h"
 
 #define OPEN_URL @"OPEN_URL"
-#define FQL_USER_STANDARD @"uid, name, email, birthday_date, about_me, pic"
-#define PERMISSIONS @"user_about_me",@"user_birthday",@"email", @"user_photos", @"publish_stream"
 
-
-#define Alert(title,msg)  [[[[UIAlertView alloc] initWithTitle:title message:msg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] autorelease] show];
+#define Alert(title,msg)  [[[UIAlertView alloc] initWithTitle:title message:msg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
 
 typedef void(^SCFacebookCallback)(BOOL success, id result);
 
-typedef enum {
+typedef NS_ENUM(NSInteger, FBPostType) {
     FBPostTypeStatus = 0,
     FBPostTypePhoto = 1,
     FBPostTypeLink = 2
-} FBPostType;
+};
 
-@interface SCFacebook : NSObject <FBSessionDelegate, FBRequestDelegate, FBDialogDelegate>{
-    Facebook *_facebook;
-    NSArray *_permissions;
-    NSMutableDictionary *_userPermissions;
-    SCFacebookCallback _callback;
-    FBPostType postType;
-}
+typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
+    FBAlbumPrivacyEveryone = 0,
+    FBAlbumPrivacyAllFriends = 1,
+    FBAlbumPrivacyFriendsOfFriends = 2,
+    FBAlbumPrivacySelf = 3
+};
 
-@property (nonatomic, assign) FBPostType postType;
+@interface SCFacebook : NSObject
 
-+ (void)initWithAppId:(NSString *)appId;
+/**
+
+FacebookSDK version
+ 
+Version 1.0, which is what we call the API as it existed the day before v2.0 was launched. We'll support v1.0 for one year and it will expire on April 30th, 2015.
+Version 2.0, which is what this upgrade guide covers. Version 2.0 is supported for at least two years. At the earliest, it will expire on April 30th, 2016.
+*/
+
+
+@property (strong, nonatomic) FBSession *session;
+@property (strong, nonatomic) NSArray *permissions;
+@property (assign, nonatomic) FBPostType postType;
+
++ (void)initWithPermissions:(NSArray *)permissions;
 + (BOOL)isSessionValid;
 + (void)loginCallBack:(SCFacebookCallback)callBack;
 + (void)logoutCallBack:(SCFacebookCallback)callBack;
-+ (void)getUserFQL:(NSString*)fql callBack:(SCFacebookCallback)callBack;
++ (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
+
+/**
+ This will only return any friends who have used (via Facebook Login) the app making the request.
+ If a friend of the person declines the user_friends permission, that friend will not show up in the friend list for this person.
+ 
+ https://developers.facebook.com/docs/graph-api/reference/v2.1/user/friends/
+ 
+ Permissions required: user_friends
+
+ *  @param callBack 
+ */
 + (void)getUserFriendsCallBack:(SCFacebookCallback)callBack;
-+ (void)feedPostWithLinkPath:(NSString*)_url caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack;
-+ (void)feedPostWithMessage:(NSString*)_message callBack:(SCFacebookCallback)callBack;
-+ (void)feedPostWithMessageDialogCallBack:(SCFacebookCallback)callBack;
-+ (void)feedPostWithPhoto:(UIImage*)_photo caption:(NSString*)_caption callBack:(SCFacebookCallback)callBack;
+
++ (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption callBack:(SCFacebookCallback)callBack;
++ (void)feedPostWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack;
++ (void)feedPostWithPhoto:(UIImage *)photo caption:(NSString *)caption callBack:(SCFacebookCallback)callBack;
++ (void)feedPostWithVideo:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack;
+
 + (void)myFeedCallBack:(SCFacebookCallback)callBack;
-+ (void)inviteFriendsWithMessage:(NSString *)_message callBack:(SCFacebookCallback)callBack;
++ (void)inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack;
++ (void)userAccountsCallBack:(SCFacebookCallback)callBack;
+
+
++ (void)getPagesCallBack:(SCFacebookCallback)callBack;
++ (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack;
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack;
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack;
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack;
++ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack;
++ (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack;
+
+
++ (void)getAlbumsCallBack:(SCFacebookCallback)callBack;
++ (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
++ (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack;
++ (void)feedPostPhotoForAlbumId:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
+
+
+
++ (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject callBack:(SCFacebookCallback)callBack;
++ (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject withImage:(UIImage *)image callBack:(SCFacebookCallback)callBack;
+
+
+
++ (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack;
++ (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack;
 
 @end
