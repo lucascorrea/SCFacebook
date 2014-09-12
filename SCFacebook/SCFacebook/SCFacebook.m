@@ -90,10 +90,10 @@
     self.permissions = permissions;
     
     //Notification
-    [[NSNotificationCenter defaultCenter] addObserverForName:OPEN_URL object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-        NSDictionary *dic = (NSDictionary *)[note userInfo];
-        [self handleOpenURL:dic[@"url"] sourceApplication:dic[@"sourceApplication"]];
-    }];
+    //    [[NSNotificationCenter defaultCenter] addObserverForName:OPEN_URL object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+    //        NSDictionary *dic = (NSDictionary *)[note userInfo];
+    //        [self handleOpenURL:dic[@"url"] sourceApplication:dic[@"sourceApplication"]];
+    //    }];
     
     //    [self updateSession];
 }
@@ -113,17 +113,13 @@
 //}
 
 
-- (BOOL)handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
-{
-    BOOL wasHandled = [FBAppCall handleOpenURL:url
-                             sourceApplication:sourceApplication];
-    return wasHandled;
-}
+//- (BOOL)handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
+//{
+//    BOOL wasHandled = [FBAppCall handleOpenURL:url
+//                             sourceApplication:sourceApplication];
+//    return wasHandled;
+//}
 
-- (void)loggedOut:(BOOL)clearInfo
-{
-    
-}
 
 - (BOOL)isSessionValid
 {
@@ -162,6 +158,8 @@
                     callBack(!error, userInfo);
                 }
             }];
+        }else{
+            callBack(NO, @"Closed session state indicating that a login attempt failed");
         }
     }];
 }
@@ -208,7 +206,7 @@
     }];
 }
 
-- (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
+- (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption message:(NSString *)message photo:(UIImage *)photo video:(NSData *)videoData callBack:(SCFacebookCallback)callBack
 {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -235,11 +233,17 @@
             [params setObject:caption forKey:@"message"];
             break;
         }
+        case FBPostTypeVideo:{
+            graphPath = @"me/videos";
+            [params setObject:videoData forKey:@"video.mp4"];
+            [params setObject:caption forKey:@"title"];
+            [params setObject:message forKey:@"description"];
+            break;
+        }
             
         default:
             break;
     }
-    
     
     [self graphFacebookForMethodPOST:graphPath params:params callBack:callBack];
 }
@@ -261,27 +265,26 @@
         return;
     }
     
-    [FBWebDialogs
-     presentRequestsDialogModallyWithSession:nil
-     message:message
-     title:nil
-     parameters:nil
-     handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-         if (error) {
-             // Error launching the dialog or sending the request.
-             callBack(NO, @"Error sending request.");
-         } else {
-             if (result == FBWebDialogResultDialogNotCompleted) {
-                 // User clicked the "x" icon
-                 callBack(NO, @"User canceled request.");
-             } else {
-                 callBack(YES, @"Send invite");
-             }
-         }
-     }];
+    [FBWebDialogs presentRequestsDialogModallyWithSession:nil
+                                                  message:message
+                                                    title:nil
+                                               parameters:nil
+                                                  handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+                                                      if (error) {
+                                                          // Error launching the dialog or sending the request.
+                                                          callBack(NO, @"Error sending request.");
+                                                      } else {
+                                                          if (result == FBWebDialogResultDialogNotCompleted) {
+                                                              // User clicked the "x" icon
+                                                              callBack(NO, @"User canceled request.");
+                                                          } else {
+                                                              callBack(YES, @"Send invite");
+                                                          }
+                                                      }
+                                                  }];
 }
 
-- (void)userAccountsCallBack:(SCFacebookCallback)callBack
+- (void)getPagesCallBack:(SCFacebookCallback)callBack
 {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -289,6 +292,258 @@
     }
     
     [self graphFacebookForMethodGET:@"me/accounts" params:nil callBack:callBack];
+}
+
+- (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!pageId) {
+        callBack(NO, @"Page id or name required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodGET:pageId params:nil callBack:callBack];
+}
+
+- (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!page) {
+        callBack(NO, @"Page id or name required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/feed", page] params:@{@"message": message} callBack:callBack];
+}
+
+- (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
+{
+    
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!page) {
+        callBack(NO, @"Page id or name required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/photos", page] params:@{@"message": message, @"source" : UIImagePNGRepresentation(photo)} callBack:callBack];
+}
+
+- (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!page) {
+        callBack(NO, @"Page id or name required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/feed", page] params:@{@"message": message, @"link" : url} callBack:callBack];
+}
+
+- (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!page) {
+        callBack(NO, @"Page id or name required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/photos", page] params:@{@"message": message, @"link" : url, @"source" : UIImagePNGRepresentation(photo)} callBack:callBack];
+    
+}
+
+- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
+{
+    [SCFacebook getPagesCallBack:^(BOOL success, id result) {
+        
+        if (success) {
+            
+            NSDictionary *dicPageAdmin = nil;
+            
+            for (NSDictionary *dic in result[@"data"]) {
+                
+                if ([dic[@"name"] isEqualToString:page]) {
+                    dicPageAdmin = dic;
+                    break;
+                }
+            }
+            
+            if (!dicPageAdmin) {
+                callBack(NO, @"Page not found!");
+                return;
+            }
+            
+            FBRequest *requestToPost = [[FBRequest alloc] initWithSession:nil
+                                                                graphPath:[NSString stringWithFormat:@"%@/feed",dicPageAdmin[@"id"]]
+                                                               parameters:@{@"message" : message, @"access_token" : dicPageAdmin[@"access_token"]}
+                                                               HTTPMethod:@"POST"];
+            
+            FBRequestConnection *requestToPostConnection = [[FBRequestConnection alloc] init];
+            [requestToPostConnection addRequest:requestToPost completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                if (error) {
+                    callBack(NO, [error domain]);
+                }else{
+                    callBack(YES, result);
+                }
+            }];
+            
+            [requestToPostConnection start];
+        }
+    }];
+}
+
+- (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
+{
+    [SCFacebook getPagesCallBack:^(BOOL success, id result) {
+        
+        if (success) {
+            
+            NSDictionary *dicPageAdmin = nil;
+            
+            for (NSDictionary *dic in result[@"data"]) {
+                
+                if ([dic[@"name"] isEqualToString:page]) {
+                    dicPageAdmin = dic;
+                    break;
+                }
+            }
+            
+            if (!dicPageAdmin) {
+                callBack(NO, @"Page not found!");
+                return;
+            }
+            
+            FBRequest *requestToPost = [[FBRequest alloc] initWithSession:nil
+                                                                graphPath:[NSString stringWithFormat:@"%@/videos",dicPageAdmin[@"id"]]
+                                                               parameters:@{@"title" : title,
+                                                                            @"description" : description,
+                                                                            @"video.mp4" : videoData,
+                                                                            @"access_token" : dicPageAdmin[@"access_token"]}
+                                                               HTTPMethod:@"POST"];
+            
+            FBRequestConnection *requestToPostConnection = [[FBRequestConnection alloc] init];
+            [requestToPostConnection addRequest:requestToPost completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                if (error) {
+                    callBack(NO, [error domain]);
+                }else{
+                    callBack(YES, result);
+                }
+            }];
+            
+            [requestToPostConnection start];
+        }
+    }];
+}
+
+- (void)getAlbumsCallBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    [self graphFacebookForMethodGET:@"me/albums" params:nil callBack:callBack];
+}
+
+- (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!albumId) {
+        callBack(NO, @"Album id required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodGET:albumId params:nil callBack:callBack];
+}
+
+- (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
+{
+    
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!albumId) {
+        callBack(NO, @"Album id required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodGET:[NSString stringWithFormat:@"%@/photos", albumId] params:nil callBack:callBack];
+}
+
+- (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!name && !message) {
+        callBack(NO, @"Name and message required");
+        return;
+    }
+    
+    NSString *privacyString = @"";
+    
+    switch (privacy) {
+        case FBAlbumPrivacyEveryone:
+            privacyString = @"EVERYONE";
+            break;
+        case FBAlbumPrivacyAllFriends:
+            privacyString = @"ALL_FRIENDS";
+            break;
+        case FBAlbumPrivacyFriendsOfFriends:
+            privacyString = @"FRIENDS_OF_FRIENDS";
+            break;
+        case FBAlbumPrivacySelf:
+            privacyString = @"SELF";
+            break;
+        default:
+            break;
+    }
+    
+    [SCFacebook graphFacebookForMethodPOST:@"me/albums" params:@{@"name" : name,
+                                                                 @"message" : message,
+                                                                 @"privacy" : privacyString} callBack:callBack];
+}
+
+- (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!albumId) {
+        callBack(NO, @"Album id required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/photos", albumId] params:@{@"source": UIImagePNGRepresentation(photo)} callBack:callBack];
 }
 
 - (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject callBack:(SCFacebookCallback)callBack
@@ -334,10 +589,10 @@
     [FBRequestConnection startForUploadStagingResourceWithImage:image completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if(!error) {
             NSLog(@"Successfuly staged image with staged URI: %@", [result objectForKey:@"uri"]);
-
+            
             // for og:image we assign the uri of the image that we just staged
-//            object[@"image"] = @[@{@"url": [result objectForKey:@"uri"], @"user_generated" : @"false" }];
-
+            //            object[@"image"] = @[@{@"url": [result objectForKey:@"uri"], @"user_generated" : @"false" }];
+            
             openGraphObject.image = @[@{@"url": [result objectForKey:@"uri"], @"user_generated" : @"false" }];
             
             [self sendForPostOpenGraphObject:openGraphObject callBack:callBack];
@@ -411,24 +666,25 @@
 + (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption callBack:(SCFacebookCallback)callBack
 {
     [SCFacebook shared].postType = FBPostTypeLink;
-    [[SCFacebook shared] feedPostWithLinkPath:url caption:caption message:nil photo:nil callBack:callBack];
+    [[SCFacebook shared] feedPostWithLinkPath:url caption:caption message:nil photo:nil video:nil callBack:callBack];
 }
 
 + (void)feedPostWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack
 {
     [SCFacebook shared].postType = FBPostTypeStatus;
-    [[SCFacebook shared] feedPostWithLinkPath:nil caption:nil message:message photo:nil callBack:callBack];
+    [[SCFacebook shared] feedPostWithLinkPath:nil caption:nil message:message photo:nil video:nil callBack:callBack];
 }
 
 + (void)feedPostWithPhoto:(UIImage *)photo caption:(NSString *)caption callBack:(SCFacebookCallback)callBack
 {
     [SCFacebook shared].postType = FBPostTypePhoto;
-    [[SCFacebook shared] feedPostWithLinkPath:nil caption:caption message:nil photo:photo callBack:callBack];
+    [[SCFacebook shared] feedPostWithLinkPath:nil caption:caption message:nil photo:photo video:nil callBack:callBack];
 }
 
 + (void)feedPostWithVideo:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
 {
-    
+    [SCFacebook shared].postType = FBPostTypePhoto;
+    [[SCFacebook shared] feedPostWithLinkPath:nil caption:title message:description photo:nil video:videoData callBack:callBack];
 }
 
 + (void)myFeedCallBack:(SCFacebookCallback)callBack
@@ -441,39 +697,35 @@
     [[SCFacebook shared] inviteFriendsWithMessage:message callBack:callBack];
 }
 
-+ (void)userAccountsCallBack:(SCFacebookCallback)callBack
-{
-    [[SCFacebook shared] userAccountsCallBack:callBack];
-}
 
 + (void)getPagesCallBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] getPagesCallBack:callBack];
 }
 
 + (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] getPageById:pageId callBack:callBack];
 }
 
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] feedPostForPage:page message:message callBack:callBack];
 }
 
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] feedPostForPage:page message:message photo:photo callBack:callBack];
 }
 
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] feedPostForPage:page message:message link:url callBack:callBack];
 }
 
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] feedPostForPage:page message:message photo:photo link:url callBack:callBack];
 }
 
 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
@@ -496,12 +748,17 @@
     
 }
 
++ (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
+{
+    
+}
+
 + (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack
 {
     
 }
 
-+ (void)feedPostPhotoForAlbumId:(NSString *)albumId callBack:(SCFacebookCallback)callBack
++ (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
 {
     
 }

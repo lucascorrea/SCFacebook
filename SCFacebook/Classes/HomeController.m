@@ -90,7 +90,7 @@
             loadingView.hidden = YES;
         }else{
             loadingView.hidden = YES;
-            Alert(@"Alert", result);
+            Alert(@"Alert", [result description]);
         }
     }];
 }
@@ -102,8 +102,9 @@
     [SCFacebook loginCallBack:^(BOOL success, id result) {
         loadingView.hidden = YES;
         if (success) {
-            //            [self getUserInfo];
             Alert(@"Alert", @"Success");
+        }else{
+            Alert(@"Alert", [result description]);
         }
     }];
 }
@@ -112,7 +113,7 @@
 {
     [SCFacebook logoutCallBack:^(BOOL success, id result) {
         if (success) {
-            Alert(@"Alert", result);
+            Alert(@"Alert", [result description]);
         }
     }];
 }
@@ -126,7 +127,7 @@
         if (success) {
             [self performSegueWithIdentifier:@"FriendSegue" sender:result];
         }else{
-            Alert(@"Alert", result);
+            Alert(@"Alert", [result description]);
         }
     }];
 }
@@ -154,9 +155,9 @@
     
     [SCFacebook sendForPostOpenGraphObject:object callBack:^(BOOL success, id result) {
         if (success) {
-            Alert(@"Alert", result);
+            Alert(@"Alert", [result description]);
         }else{
-            Alert(@"Alert", result);
+            Alert(@"Alert", [result description]);
         }
     }];
 }
@@ -182,9 +183,9 @@
     
     [SCFacebook sendForPostOpenGraphObject:object callBack:^(BOOL success, id result) {
         if (success) {
-            Alert(@"Alert", result);
+            Alert(@"Alert", [result description]);
         }else{
-            Alert(@"Alert", result);
+            Alert(@"Alert", [result description]);
         }
     }];
 }
@@ -194,9 +195,9 @@
 {
     [SCFacebook inviteFriendsWithMessage:@"Invite Friends" callBack:^(BOOL success, id result) {
         if (success) {
-            Alert(@"Alert", result);
+            Alert(@"Alert", [result description]);
         }else{
-            Alert(@"Alert", result);
+            Alert(@"Alert", [result description]);
         }
     }];
 }
@@ -265,16 +266,16 @@
     
     
     //POST  video user
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"movie" ofType:@"mov"];
-    NSData *videoData = [NSData dataWithContentsOfFile:filePath];
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   videoData, @"video.mp4",
-                                   @"Video Test Description2", @"description",
-                                   @"Titulo do video2", @"title",nil];
-
-    [SCFacebook graphFacebookForMethodPOST:@"me/videos" params:params callBack:^(BOOL success, id result) {
-        NSLog(@"%@", result);
-    }];
+//    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"movie" ofType:@"mov"];
+//    NSData *videoData = [NSData dataWithContentsOfFile:filePath];
+//    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+//                                   videoData, @"video.mp4",
+//                                   @"Video Test Description2", @"description",
+//                                   @"Titulo do video2", @"title",nil];
+//
+//    [SCFacebook graphFacebookForMethodPOST:@"me/videos" params:params callBack:^(BOOL success, id result) {
+//        NSLog(@"%@", result);
+//    }];
     
 
     //POST video in page
@@ -331,7 +332,7 @@
             loadingView.hidden = NO;
             [SCFacebook feedPostWithLinkPath:@"http://www.lucascorrea.com" caption:@"Portfolio" callBack:^(BOOL success, id result) {
                 loadingView.hidden = YES;
-                Alert(@"Alert", result);
+                Alert(@"Alert", [result description]);
             }];
             break;
         }
@@ -341,7 +342,7 @@
             loadingView.hidden = NO;
             [SCFacebook feedPostWithMessage:@"This is message" callBack:^(BOOL success, id result) {
                 loadingView.hidden = YES;
-                Alert(@"Alert", result);
+                Alert(@"Alert", [result description]);
             }];
             break;
         }
@@ -351,7 +352,7 @@
             loadingView.hidden = NO;
             [SCFacebook feedPostWithPhoto:image caption:@"This is message with photo" callBack:^(BOOL success, id result) {
                 loadingView.hidden = YES;
-                Alert(@"Alert", result);
+                Alert(@"Alert", [result description]);
             }];
             break;
         }

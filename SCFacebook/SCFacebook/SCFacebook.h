@@ -26,7 +26,7 @@
 #import <Foundation/Foundation.h>
 #import "FacebookSDK.h"
 
-#define OPEN_URL @"OPEN_URL"
+//#define OPEN_URL @"OPEN_URL"
 
 #define Alert(title,msg)  [[[UIAlertView alloc] initWithTitle:title message:msg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
 
@@ -35,7 +35,8 @@ typedef void(^SCFacebookCallback)(BOOL success, id result);
 typedef NS_ENUM(NSInteger, FBPostType) {
     FBPostTypeStatus = 0,
     FBPostTypePhoto = 1,
-    FBPostTypeLink = 2
+    FBPostTypeLink = 2,
+    FBPostTypeVideo = 3
 };
 
 typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
@@ -48,12 +49,12 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 @interface SCFacebook : NSObject
 
 /**
-
-FacebookSDK version
  
-Version 1.0, which is what we call the API as it existed the day before v2.0 was launched. We'll support v1.0 for one year and it will expire on April 30th, 2015.
-Version 2.0, which is what this upgrade guide covers. Version 2.0 is supported for at least two years. At the earliest, it will expire on April 30th, 2016.
-*/
+ FacebookSDK version
+ 
+ Version 1.0, which is what we call the API as it existed the day before v2.0 was launched. We'll support v1.0 for one year and it will expire on April 30th, 2015.
+ Version 2.0, which is what this upgrade guide covers. Version 2.0 is supported for at least two years. At the earliest, it will expire on April 30th, 2016.
+ */
 
 
 @property (strong, nonatomic) FBSession *session;
@@ -67,14 +68,14 @@ Version 2.0, which is what this upgrade guide covers. Version 2.0 is supported f
 + (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
 
 /**
- This will only return any friends who have used (via Facebook Login) the app making the request.
- If a friend of the person declines the user_friends permission, that friend will not show up in the friend list for this person.
- 
- https://developers.facebook.com/docs/graph-api/reference/v2.1/user/friends/
- 
- Permissions required: user_friends
-
- *  @param callBack 
+ *  This will only return any friends who have used (via Facebook Login) the app making the request.
+ *  If a friend of the person declines the user_friends permission, that friend will not show up in the friend list for this person.
+ *
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/user/friends/
+ *
+ *  Permissions required: user_friends
+ *
+ *  @param callBack
  */
 + (void)getUserFriendsCallBack:(SCFacebookCallback)callBack;
 
@@ -85,10 +86,19 @@ Version 2.0, which is what this upgrade guide covers. Version 2.0 is supported f
 
 + (void)myFeedCallBack:(SCFacebookCallback)callBack;
 + (void)inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack;
-+ (void)userAccountsCallBack:(SCFacebookCallback)callBack;
-
 
 + (void)getPagesCallBack:(SCFacebookCallback)callBack;
+
+/**
+ *  Facebook Web address ou pageId
+ *  Example http://www.lucascorrea.com/PageId.png
+ *
+ *
+ *  Permissions required: manage_pages
+ *
+ *  @param pageId   <#pageId description#>
+ *  @param callBack <#callBack description#>
+ */
 + (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack;
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack;
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
@@ -100,8 +110,9 @@ Version 2.0, which is what this upgrade guide covers. Version 2.0 is supported f
 
 + (void)getAlbumsCallBack:(SCFacebookCallback)callBack;
 + (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
++ (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
 + (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack;
-+ (void)feedPostPhotoForAlbumId:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
++ (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
 
 
 
