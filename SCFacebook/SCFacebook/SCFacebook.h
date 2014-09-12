@@ -47,11 +47,12 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 @interface SCFacebook : NSObject
 
 /**
- 
- FacebookSDK version
- 
- Version 1.0, which is what we call the API as it existed the day before v2.0 was launched. We'll support v1.0 for one year and it will expire on April 30th, 2015.
- Version 2.0, which is what this upgrade guide covers. Version 2.0 is supported for at least two years. At the earliest, it will expire on April 30th, 2016.
+ *
+ *  FacebookSDK version
+ *
+ *  Version 1.0, which is what we call the API as it existed the day before v2.0 was launched. We'll support v1.0 for one year and it will expire on April 30th, 2015.
+ *  Version 2.0, which is what this upgrade guide covers. Version 2.0 is supported for at least two years. At the earliest, it will expire on April 30th, 2016.
+ *
  */
 @property (strong, nonatomic) FBSession *session;
 @property (strong, nonatomic) NSArray *permissions;
@@ -59,38 +60,53 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 
 
 /**
- *  <#Description#>
+ *  When a person logs into your app via Facebook Login you can access a subset of that person's data stored on Facebook. Permissions are how you ask someone if you can access that data. A person's privacy settings combined with what you ask for will determine what you can access.
+ *
+ *  Permissions are strings that are passed along with a login request or an API call. Here are two examples of permissions:
+ *
+ *  email - Access to a person's primary email address.
+ *  user_likes - Access to the list of things a person likes.
+ *
+ *  https://developers.facebook.com/docs/facebook-login/permissions/v2.1
  *
  *  @param permissions
  */
 + (void)initWithPermissions:(NSArray *)permissions;
 
 /**
- *  <#Description#>
+ *  Checks if there is an open session, if it is not checked if a token is created and returned there to validate session.
  *
- *  @return <#return value description#>
+ *  @return BOOL
  */
 + (BOOL)isSessionValid;
 
 /**
- *  <#Description#>
+ *  Facebook login
  *
- *  @param callBack <#callBack description#>
+ * https://developers.facebook.com/docs/ios/graph
+ *
+ *  @param callBack (BOOL success, id result)
  */
 + (void)loginCallBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Facebook logout
  *
- *  @param callBack <#callBack description#>
+ * https://developers.facebook.com/docs/ios/graph
+ *
+ *  @param callBack (BOOL success, id result)
  */
 + (void)logoutCallBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Get the data from the logged in user by passing the fields.
  *
- *  @param fields   <#fields description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/facebook-login/permissions/v2.1#reference-public_profile
+ *
+ *  Permissions required: public_profile...
+ *
+ *  @param fields   fields example: id, name, email, birthday, about, picture
+ *  @param callBack (BOOL success, id result)
  */
 + (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
 
@@ -102,260 +118,384 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *
  *  Permissions required: user_friends
  *
- *  @param callBack
+ *  @param callBack (BOOL success, id result)
  */
 + (void)getUserFriendsCallBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post in the user profile with link and caption
  *
- *  @param url      <#url description#>
- *  @param caption  <#caption description#>
- *  @param callBack <#callBack description#>
+ * https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param url      NSString
+ *  @param caption  NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post in the user profile with message
+ * 
+ * https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
  *
- *  @param message  <#message description#>
- *  @param callBack <#callBack description#>
+ *  Permissions required: publish_actions
+ *
+ *  @param message  NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post in the user profile with photo and caption
  *
- *  @param photo    <#photo description#>
- *  @param caption  <#caption description#>
- *  @param callBack <#callBack description#>
+ * https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param photo    UIImage
+ *  @param caption  NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostWithPhoto:(UIImage *)photo caption:(NSString *)caption callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post in the user profile with video, title and description
  *
- *  @param videoData   <#videoData description#>
- *  @param title       <#title description#>
- *  @param description <#description description#>
- *  @param callBack    <#callBack description#>
+ * https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param videoData   NSData
+ *  @param title       NSString
+ *  @param description NSString
+ *  @param callBack    (BOOL success, id result)
  */
 + (void)feedPostWithVideo:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  The feed of posts (including status updates) and links published by this person, or by others on this person's profile.
  *
- *  @param callBack <#callBack description#>
+ * https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
+ *
+ *  Permissions required: read_stream
+ *
+ *  @param callBack (BOOL success, id result)
  */
 + (void)myFeedCallBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Invite friends with message via dialog
  *
- *  @param message  <#message description#>
- *  @param callBack <#callBack description#>
+ * https://developers.facebook.com/docs/graph-api/reference/v2.1/user/
+ *
+ *  @param message  NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)inviteFriendsWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Get pages in user
  *
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *  Permissions required: manage_pages
+ *
+ *  @param callBack (BOOL success, id result)
  */
 + (void)getPagesCallBack:(SCFacebookCallback)callBack;
 
 /**
+ *
+ *  Get page with id
+ *
  *  Facebook Web address ou pageId
  *  Example http://www.lucascorrea.com/PageId.png
  *
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
  *
  *  Permissions required: manage_pages
  *
- *  @param pageId   <#pageId description#>
- *  @param callBack <#callBack description#>
+ *  @param pageId   Facebook Web address ou pageId
+ *  @param callBack (BOOL success, id result)
  */
 + (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post in the page profile with message
  *
- *  @param page     <#page description#>
- *  @param message  <#message description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param page     NSString
+ *  @param message  NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post in the page profile with message and photo
  *
- *  @param page     <#page description#>
- *  @param message  <#message description#>
- *  @param photo    <#photo description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param page     NSString
+ *  @param message  NSString
+ *  @param photo    UIImage
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post in the page profile with message and link
  *
- *  @param page     <#page description#>
- *  @param message  <#message description#>
- *  @param url      <#url description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param page     NSString
+ *  @param message  NSString
+ *  @param url      NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post in the page profile with message, photo and link
  *
- *  @param page     <#page description#>
- *  @param message  <#message description#>
- *  @param photo    <#photo description#>
- *  @param url      <#url description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param page     NSString
+ *  @param message  NSString
+ *  @param photo    UIImage
+ *  @param url      NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post in the page profile with video, title and description
  *
- *  @param page        <#page description#>
- *  @param videoData   <#videoData description#>
- *  @param title       <#title description#>
- *  @param description <#description description#>
- *  @param callBack    <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param page        NSString
+ *  @param videoData   NSData
+ *  @param title       NSString
+ *  @param description NSString
+ *  @param callBack    (BOOL success, id result)
  */
 + (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post on page with administrator profile with a message
  *
- *  @param page     <#page description#>
- *  @param message  <#message description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param page     NSString
+ *  @param message  NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post on page with administrator profile with a message and link
  *
- *  @param page     <#page description#>
- *  @param message  <#message description#>
- *  @param url      <#url description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param page     NSString
+ *  @param message  NSString
+ *  @param url      NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post on page with administrator profile with a message and photo
  *
- *  @param page     <#page description#>
- *  @param message  <#message description#>
- *  @param photo    <#photo description#>
- *  @param callBack <#callBack description#>
+ *  Permissions required: publish_actions
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *
+ *  @param page     NSString
+ *  @param message  NSString
+ *  @param photo    UIImage
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post on page with administrator profile with a message, photo and link
  *
- *  @param page     <#page description#>
- *  @param message  <#message description#>
- *  @param photo    <#photo description#>
- *  @param url      <#url description#>
- *  @param callBack <#callBack description#>
+ *  Permissions required: publish_actions
+ *
+ *  @param page     NSString
+ *  @param message  NSString
+ *  @param photo    UIImage
+ *  @param url      NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post on page with administrator profile with a video, title and description
  *
- *  @param page        <#page description#>
- *  @param videoData   <#videoData description#>
- *  @param title       <#title description#>
- *  @param description <#description description#>
- *  @param callBack    <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param page        NSString
+ *  @param videoData   NSData
+ *  @param title       NSString
+ *  @param description NSString
+ *  @param callBack    (BOOL success, id result)
  */
 + (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Get albums in user
  *
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/user/albums
+ *
+ *  Permissions required: user_photos
+ *
+ *  @param callBack (BOOL success, id result)
  */
 + (void)getAlbumsCallBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Get album with id
  *
- *  @param albumId  <#albumId description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/user/albums
+ *
+ *  Permissions required: user_photos
+ *
+ *  @param albumId  NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Get photos the album with id
  *
- *  @param albumId  <#albumId description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/album/photos
+ *
+ *  Permissions required: user_photos
+ *
+ *  @param albumId  NSString
+ *  @param callBack (BOOL success, id result)
  */
 + (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Create album the user
  *
- *  @param name     <#name description#>
- *  @param message  <#message description#>
- *  @param privacy  <#privacy description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/user/albums
+ *
+ *  Permissions required: publish_actions and user_photos
+ *
+ *  @param name     NSString
+ *  @param message  NSString
+ *  @param privacy  ENUM
+ *  @param callBack (BOOL success, id result)
  */
 + (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post the photo album in your user profile
  *
- *  @param albumId  <#albumId description#>
- *  @param photo    <#photo description#>
- *  @param callBack <#callBack description#>
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.1/album/photos
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param albumId  NSString
+ *  @param photo    UIImage
+ *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  Post open graph 
  *
- *  @param path            <#path description#>
- *  @param openGraphObject <#openGraphObject description#>
- *  @param objectName      <#objectName description#>
- *  @param callBack        <#callBack description#>
+ *  Open Graph lets apps tell stories on Facebook through a structured, strongly typed API. When people engage with these stories they are directed to your app or, if they don't have your app installed, to your app's App Store page, driving engagement and distribution for your app.
+ *
+ *  Stories have the following core components:
+ *
+ *   An actor: the person who publishes the story, the user.
+ *   An action the actor performs, for example: cook, run or read.
+ *   An object on which the action is performed: cook a meal, run a race, read a book.
+ *   An app: the app from which the story is posted, which is featured alongside the story.
+ *  We provide some built in objects and actions for frequent use cases, and you can also create custom actions and objects to fit your app.
+ *
+ *  https://developers.facebook.com/docs/ios/open-graph
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param path            NSString
+ *  @param openGraphObject NSString
+ *  @param objectName      NSString
+ *  @param callBack        (BOOL success, id result)
  */
 + (void)sendForPostOpenGraphPath:(NSString *)path graphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject objectName:(NSString *)objectName callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *   Post open graph with image
  *
- *  @param path            <#path description#>
- *  @param openGraphObject <#openGraphObject description#>
- *  @param objectName      <#objectName description#>
- *  @param image           <#image description#>
- *  @param callBack        <#callBack description#>
+ *  Open Graph lets apps tell stories on Facebook through a structured, strongly typed API. When people engage with these stories they are directed to your app or, if they don't have your app installed, to your app's App Store page, driving engagement and distribution for your app.
+ *
+ *  Stories have the following core components:
+ *
+ *   An actor: the person who publishes the story, the user.
+ *   An action the actor performs, for example: cook, run or read.
+ *   An object on which the action is performed: cook a meal, run a race, read a book.
+ *   An app: the app from which the story is posted, which is featured alongside the story.
+ *  We provide some built in objects and actions for frequent use cases, and you can also create custom actions and objects to fit your app.
+ *
+ *  https://developers.facebook.com/docs/ios/open-graph
+ *
+ *  Permissions required: publish_actions
+ *
+ *  @param path            NSString
+ *  @param openGraphObject NSString
+ *  @param objectName      NSString
+ *  @param image           UIImage
+ *  @param callBack        (BOOL success, id result)
  */
 + (void)sendForPostOpenGraphPath:(NSString *)path graphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject objectName:(NSString *)objectName withImage:(UIImage *)image callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  If not on the list in SCFacebook method, this method can be used to make calls via the graph API GET
  *
- *  @param method   <#method description#>
- *  @param params   <#params description#>
- *  @param callBack <#callBack description#>
+ *  Calling the Graph API GET
+ *
+ *  https://developers.facebook.com/docs/ios/graph
+ *
+ *  @param method   NSString
+ *  @param params   NSDictionary
+ *  @param callBack (BOOL success, id result)
  */
 + (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack;
 
 /**
- *  <#Description#>
+ *  If not on the list in SCFacebook method, this method can be used to make calls via the graph API POST
  *
- *  @param method   <#method description#>
- *  @param params   <#params description#>
- *  @param callBack <#callBack description#>
+ *  Calling the Graph API POST
+ *
+ *  https://developers.facebook.com/docs/ios/graph
+ *
+ *  @param method   NSString
+ *  @param params   NSDictionary
+ *  @param callBack (BOOL success, id result)
  */
 + (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack;
 
