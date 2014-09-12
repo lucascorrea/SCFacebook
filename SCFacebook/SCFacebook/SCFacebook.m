@@ -28,9 +28,6 @@
 
 @interface SCFacebook()
 
-//@property (copy, nonatomic) SCFacebookCallback callBack;
-//@property (copy, nonatomic) NSDictionary *userInfo;
-
 + (SCFacebook *)shared;
 
 @end
@@ -59,28 +56,7 @@
 }
 
 
-#pragma mark -
-#pragma mark - NSDefaults
 
-- (void)saveDefaultValue:(id)value forKey:(NSString *)forKey
-{
-    [[NSUserDefaults standardUserDefaults] setObject:value forKey:forKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-
-- (id)defaultValueForKey:(NSString *)key
-{
-    return [[NSUserDefaults standardUserDefaults] objectForKey:key];
-}
-
-#pragma mark -
-#pragma mark - Property
-
-//- (NSDictionary *)userInfo
-//{
-//    return [self defaultValueForKey:@"userInfo"];
-//}
 
 #pragma mark -
 #pragma mark - Private Methods
@@ -88,38 +64,7 @@
 - (void)initWithPermissions:(NSArray *)permissions
 {
     self.permissions = permissions;
-    
-    //Notification
-    //    [[NSNotificationCenter defaultCenter] addObserverForName:OPEN_URL object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-    //        NSDictionary *dic = (NSDictionary *)[note userInfo];
-    //        [self handleOpenURL:dic[@"url"] sourceApplication:dic[@"sourceApplication"]];
-    //    }];
-    
-    //    [self updateSession];
 }
-
-//- (void)updateSession
-//{
-//    if (!self.session.isOpen){
-//        self.session = [[FBSession alloc] initWithPermissions:self.permissions];
-//        if (self.session.state == FBSessionStateCreatedTokenLoaded){
-//            [self.session openWithCompletionHandler:^(FBSession *session,
-//                                                      FBSessionState status,
-//                                                      NSError *error) {
-//                self.session = session;
-//            }];
-//        }
-//    }
-//}
-
-
-//- (BOOL)handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
-//{
-//    BOOL wasHandled = [FBAppCall handleOpenURL:url
-//                             sourceApplication:sourceApplication];
-//    return wasHandled;
-//}
-
 
 - (BOOL)isSessionValid
 {
@@ -170,9 +115,7 @@
         [FBSession.activeSession closeAndClearTokenInformation];
         [FBSession setActiveSession:nil];
     }
-    
-    [self saveDefaultValue:nil forKey:@"userInfo"];
-    
+        
     NSHTTPCookieStorage* cookies = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     NSArray* facebookCookies = [cookies cookiesForURL:[NSURL URLWithString:@"https://facebook.com/"]];
     
@@ -368,7 +311,24 @@
     }
     
     [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/photos", page] params:@{@"message": message, @"link" : url, @"source" : UIImagePNGRepresentation(photo)} callBack:callBack];
+}
+
+- (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
     
+    if (!page) {
+        callBack(NO, @"Page id or name required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/videos", page]
+                                    params:@{@"title" : title,
+                                             @"description" : description,
+                                             @"video.mp4" : videoData} callBack:callBack];
 }
 
 - (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
@@ -437,6 +397,133 @@
                                                                parameters:@{@"title" : title,
                                                                             @"description" : description,
                                                                             @"video.mp4" : videoData,
+                                                                            @"access_token" : dicPageAdmin[@"access_token"]}
+                                                               HTTPMethod:@"POST"];
+            
+            FBRequestConnection *requestToPostConnection = [[FBRequestConnection alloc] init];
+            [requestToPostConnection addRequest:requestToPost completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                if (error) {
+                    callBack(NO, [error domain]);
+                }else{
+                    callBack(YES, result);
+                }
+            }];
+            
+            [requestToPostConnection start];
+        }
+    }];
+}
+
+- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
+{
+    [SCFacebook getPagesCallBack:^(BOOL success, id result) {
+        
+        if (success) {
+            
+            NSDictionary *dicPageAdmin = nil;
+            
+            for (NSDictionary *dic in result[@"data"]) {
+                
+                if ([dic[@"name"] isEqualToString:page]) {
+                    dicPageAdmin = dic;
+                    break;
+                }
+            }
+            
+            if (!dicPageAdmin) {
+                callBack(NO, @"Page not found!");
+                return;
+            }
+            
+            FBRequest *requestToPost = [[FBRequest alloc] initWithSession:nil
+                                                                graphPath:[NSString stringWithFormat:@"%@/feed",dicPageAdmin[@"id"]]
+                                                               parameters:@{@"message" : message,
+                                                                            @"link" : url,
+                                                                            @"access_token" : dicPageAdmin[@"access_token"]}
+                                                               HTTPMethod:@"POST"];
+            
+            FBRequestConnection *requestToPostConnection = [[FBRequestConnection alloc] init];
+            [requestToPostConnection addRequest:requestToPost completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                if (error) {
+                    callBack(NO, [error domain]);
+                }else{
+                    callBack(YES, result);
+                }
+            }];
+            
+            [requestToPostConnection start];
+        }
+    }];
+}
+
+- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
+{
+    [SCFacebook getPagesCallBack:^(BOOL success, id result) {
+        
+        if (success) {
+            
+            NSDictionary *dicPageAdmin = nil;
+            
+            for (NSDictionary *dic in result[@"data"]) {
+                
+                if ([dic[@"name"] isEqualToString:page]) {
+                    dicPageAdmin = dic;
+                    break;
+                }
+            }
+            
+            if (!dicPageAdmin) {
+                callBack(NO, @"Page not found!");
+                return;
+            }
+            
+            FBRequest *requestToPost = [[FBRequest alloc] initWithSession:nil
+                                                                graphPath:[NSString stringWithFormat:@"%@/photos",dicPageAdmin[@"id"]]
+                                                               parameters:@{@"message" : message,
+                                                                            @"source" : UIImagePNGRepresentation(photo),
+                                                                            @"access_token" : dicPageAdmin[@"access_token"]}
+                                                               HTTPMethod:@"POST"];
+            
+            FBRequestConnection *requestToPostConnection = [[FBRequestConnection alloc] init];
+            [requestToPostConnection addRequest:requestToPost completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                if (error) {
+                    callBack(NO, [error domain]);
+                }else{
+                    callBack(YES, result);
+                }
+            }];
+            
+            [requestToPostConnection start];
+        }
+    }];
+}
+
+- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack
+{
+    [SCFacebook getPagesCallBack:^(BOOL success, id result) {
+        
+        if (success) {
+            
+            NSDictionary *dicPageAdmin = nil;
+            
+            for (NSDictionary *dic in result[@"data"]) {
+                
+                if ([dic[@"name"] isEqualToString:page]) {
+                    dicPageAdmin = dic;
+                    break;
+                }
+            }
+            
+            if (!dicPageAdmin) {
+                callBack(NO, @"Page not found!");
+                return;
+            }
+            
+            FBRequest *requestToPost = [[FBRequest alloc] initWithSession:nil
+                                                                graphPath:[NSString stringWithFormat:@"%@/photos",dicPageAdmin[@"id"]]
+                                                               parameters:@{@"message" : message,
+                                                                            @"link" : url,
+                                                                            @"source" : UIImagePNGRepresentation(photo),
                                                                             @"access_token" : dicPageAdmin[@"access_token"]}
                                                                HTTPMethod:@"POST"];
             
@@ -546,7 +633,7 @@
     [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/photos", albumId] params:@{@"source": UIImagePNGRepresentation(photo)} callBack:callBack];
 }
 
-- (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject callBack:(SCFacebookCallback)callBack
+- (void)sendForPostOpenGraphPath:(NSString *)path graphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject objectName:(NSString *)objectName callBack:(SCFacebookCallback)callBack
 {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -558,14 +645,13 @@
         if(!error) {
             // get the object ID for the Open Graph object that is now stored in the Object API
             NSString *objectId = [result objectForKey:@"id"];
-            NSLog(@"object id: %@", objectId);
             
             // create an Open Graph action
             id<FBOpenGraphAction> action = (id<FBOpenGraphAction>)[FBGraphObject graphObject];
-            [action setObject:objectId forKey:@"graphtest"];
+            [action setObject:objectId forKey:objectName];
             
             // create action referencing user owned object
-            [FBRequestConnection startForPostWithGraphPath:@"/me/fblucascorreatest:test" graphObject:action completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            [FBRequestConnection startForPostWithGraphPath:path graphObject:action completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                 if(error) {
                     // An error occurred, we need to handle the error
                     // See: https://developers.facebook.com/docs/ios/errors
@@ -583,8 +669,13 @@
     }];
 }
 
-- (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject withImage:(UIImage *)image callBack:(SCFacebookCallback)callBack
+- (void)sendForPostOpenGraphPath:(NSString *)path graphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject objectName:(NSString *)objectName withImage:(UIImage *)image callBack:(SCFacebookCallback)callBack
 {
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
     // stage an image
     [FBRequestConnection startForUploadStagingResourceWithImage:image completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if(!error) {
@@ -595,7 +686,7 @@
             
             openGraphObject.image = @[@{@"url": [result objectForKey:@"uri"], @"user_generated" : @"false" }];
             
-            [self sendForPostOpenGraphObject:openGraphObject callBack:callBack];
+            [self sendForPostOpenGraphPath:path graphObject:openGraphObject objectName:objectName withImage:image callBack:callBack];
         }
     }];
 }
@@ -697,7 +788,6 @@
     [[SCFacebook shared] inviteFriendsWithMessage:message callBack:callBack];
 }
 
-
 + (void)getPagesCallBack:(SCFacebookCallback)callBack
 {
     [[SCFacebook shared] getPagesCallBack:callBack];
@@ -728,49 +818,69 @@
     [[SCFacebook shared] feedPostForPage:page message:message photo:photo link:url callBack:callBack];
 }
 
++ (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] feedPostForPage:page video:videoData title:title description:description callBack:callBack];
+}
+
 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] feedPostAdminForPageName:page message:message callBack:callBack];
 }
 
 + (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] feedPostAdminForPageName:page video:videoData title:title description:description callBack:callBack];
+}
+
++ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] feedPostAdminForPageName:page message:message link:url callBack:callBack];
+}
+
++ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] feedPostAdminForPageName:page message:message photo:photo callBack:callBack];
+}
+
++ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] feedPostAdminForPageName:page message:message photo:photo link:url callBack:callBack];
 }
 
 + (void)getAlbumsCallBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] getAlbumsCallBack:callBack];
 }
 
 + (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] getAlbumById:albumId callBack:callBack];
 }
 
 + (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] getPhotosAlbumById:albumId callBack:callBack];
 }
 
 + (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] createAlbumName:name message:message privacy:privacy callBack:callBack];
 }
 
 + (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
 {
-    
+    [[SCFacebook shared] feedPostForAlbumId:albumId photo:photo callBack:callBack];
 }
 
-+ (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject callBack:(SCFacebookCallback)callBack
++ (void)sendForPostOpenGraphPath:(NSString *)path graphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject objectName:(NSString *)objectName callBack:(SCFacebookCallback)callBack
 {
-    [[SCFacebook shared] sendForPostOpenGraphObject:openGraphObject callBack:callBack];
+    [[SCFacebook shared] sendForPostOpenGraphPath:path graphObject:openGraphObject objectName:objectName callBack:callBack];
 }
 
-+ (void)sendForPostOpenGraphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject withImage:(UIImage *)image callBack:(SCFacebookCallback)callBack
++ (void)sendForPostOpenGraphPath:(NSString *)path graphObject:(NSMutableDictionary<FBOpenGraphObject> *)openGraphObject objectName:(NSString *)objectName withImage:(UIImage *)image callBack:(SCFacebookCallback)callBack
 {
-    [[SCFacebook shared] sendForPostOpenGraphObject:openGraphObject withImage:image callBack:callBack];
+    [[SCFacebook shared] sendForPostOpenGraphPath:path graphObject:openGraphObject objectName:objectName withImage:image callBack:callBack];
 }
 
 + (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack
