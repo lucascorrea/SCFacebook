@@ -99,6 +99,15 @@ To use the component is very easy. Import the header for your class.
 		}];
 	}
 
+	//Getting Users name
+	[SCFacebook getUserFQL:@"name" callBack:^(BOOL success, id result)
+     	{
+         	if(success)
+         	{
+             		NSMutableString *userName=[NSMutableString stringWithString:[NSString stringWithFormat:@"%@",[result objectForKey:@"name"]]];
+         }	
+     }];   
+
 License
 =============
 
