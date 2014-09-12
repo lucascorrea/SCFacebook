@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SCFacebook"
-  s.version      = "1.0"
+  s.version      = "3.0"
   s.summary      = "The SCFacebook is a simpler and cleaner to use the api facebook-ios-sdk Objective-C "
 
   s.description  = <<-DESC
@@ -74,7 +74,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-   s.source       = { :git => "https://github.com/lucascorrea/SCFacebook.git", :tag => "1.0" }
+   s.source       = { :git => "https://github.com/lucascorrea/SCFacebook.git", :tag => "3.0" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -85,7 +85,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "SCFacebook.{h,m}"
+  s.source_files  = "SCFacebook/**/*SCFacebook.{h,m}"
   #s.exclude_files = "Classes/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
@@ -127,6 +127,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  # s.dependency "JSONKit", "~> 1.4"
+  s.dependency "Facebook-iOS-SDK", "~> 3.17.0"
+  s.dependency "SDWebImage", "~>3.6"
 
 end

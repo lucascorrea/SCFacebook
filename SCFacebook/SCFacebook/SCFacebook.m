@@ -103,7 +103,7 @@
                     callBack(!error, userInfo);
                 }
             }];
-        }else{
+        }else if(status == FBSessionStateClosedLoginFailed){
             callBack(NO, @"Closed session state indicating that a login attempt failed");
         }
     }];

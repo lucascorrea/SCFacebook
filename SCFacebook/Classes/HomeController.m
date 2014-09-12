@@ -499,7 +499,7 @@
                 loadingView.hidden = NO;
                 
                 UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"]]];
-                [SCFacebook feedPostForAlbumId:@"800089266720713" photo:image callBack:^(BOOL success, id result) {
+                [SCFacebook feedPostForAlbumId:@"103540609708919" photo:image callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
                     Alert(@"Alert", [result description]);
                 }];

@@ -16,9 +16,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    //Your application App ID/API Key Facebook
-    
-
+    //Init SCFacebook
     [SCFacebook initWithPermissions:@[@"user_about_me",
                                       @"user_birthday",
                                       @"email",
@@ -56,8 +54,6 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-//    [[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:nil userInfo:@{@"url": url, @"sourceApplication": sourceApplication}];
-    
     BOOL wasHandled = [FBAppCall handleOpenURL:url
                              sourceApplication:sourceApplication];
     return wasHandled;
