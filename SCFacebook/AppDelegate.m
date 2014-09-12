@@ -19,7 +19,20 @@
     //Your application App ID/API Key Facebook
     
 
-    [SCFacebook initWithPermissions:@[@"user_about_me",@"user_birthday",@"email", @"user_photos", @"publish_stream", @"user_events", @"friends_events", @"manage_pages", @"share_item", @"publish_actions", @"user_friends", @"manage_pages", @"user_videos", @"public_profile"]];
+    [SCFacebook initWithPermissions:@[@"user_about_me",
+                                      @"user_birthday",
+                                      @"email",
+                                      @"user_photos",
+                                      @"publish_stream",
+                                      @"user_events",
+                                      @"friends_events",
+                                      @"manage_pages",
+                                      @"share_item",
+                                      @"publish_actions",
+                                      @"user_friends",
+                                      @"manage_pages",
+                                      @"user_videos",
+                                      @"public_profile"]];
     
     
     //Loading

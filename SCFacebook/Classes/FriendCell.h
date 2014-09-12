@@ -7,16 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EGOImageView.h"
 
-@interface FriendCell : UITableViewCell{
-    
-    IBOutlet EGOImageView *photoImageView;
-    IBOutlet UILabel *nameLabel;
-}
+@interface FriendCell : UITableViewCell
 
-@property (nonatomic,strong)  EGOImageView *photoImageView;
-@property (nonatomic,strong)  UILabel *nameLabel;
+@property (nonatomic,strong)  IBOutlet UIImageView *photoImageView;
+@property (nonatomic,strong)  IBOutlet UILabel *nameLabel;
 
 
 @end

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EGOImageView.h"
 
 @interface HomeController : UIViewController <UIActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
 

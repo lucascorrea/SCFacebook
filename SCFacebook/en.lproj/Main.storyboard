@@ -25,7 +25,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="84"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="9aS-HX-oAb" customClass="EGOImageView">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="9aS-HX-oAb">
                                                     <rect key="frame" x="9" y="4" width="71" height="71"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>

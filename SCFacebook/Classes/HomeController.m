@@ -159,13 +159,12 @@
                       otherButtonTitles:
                       @"Get Pages",
                       @"Message",
+                      @"Message + Photo",
                       @"Message + Link",
-                      @"Message + Photo + Link",
                       @"Title + Description + Video",
                       @"Admin Message",
                       @"Admin Message + Link",
                       @"Admin Message + Photo",
-                      @"Admin Message + Photo + Link",
                       @"Admin Title + Description + Video", nil];
     self.pageSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [self.pageSheet showFromRect:self.view.bounds inView:self.view animated:YES];
@@ -173,7 +172,7 @@
 
 - (void)publishAlbums
 {
-    self.pageSheet = [[UIActionSheet alloc]
+    self.albumSheet = [[UIActionSheet alloc]
                       initWithTitle:@"Option Albums"
                       delegate:self
                       cancelButtonTitle:nil
@@ -184,8 +183,8 @@
                       @"Get Photos the album",
                       @"Create Album",
                       @"Post Photo in album", nil];
-    self.pageSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-    [self.pageSheet showFromRect:self.view.bounds inView:self.view animated:YES];
+    self.albumSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+    [self.albumSheet showFromRect:self.view.bounds inView:self.view animated:YES];
 }
 
 - (void)publishOpenGraph
@@ -267,122 +266,10 @@
     }];
 }
 
-- (void)eventTest
-{
-    //Get page info - Name PAGEIOS
-    //    633641776679599
-    //    Facebook Web address ou pageId
-    //    Example http://www.lucascorrea.com/PageId.png
-    
-    //    [SCFacebook graphFacebookForMethodGET:@"pageios" params:nil callBack:^(BOOL success, id result) {
-    //        NSLog(@"%@", result);
-    //    }];
-    
-    
-    //POST page - post user PAGEIOS
-    //enviando mensagem para pagina
-    //        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    //        [params setObject:@"Event 9 with photo" forKey:@"message"];
-    //        [SCFacebook graphFacebookForMethodPOST:@"pageios/feed" params:params callBack:^(BOOL success, id result) {
-    //            NSLog(@"%@", result);
-    //        }];
-    
-    //foto com message
-    //    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    //    [params setObject:@"Event 19 with photo" forKey:@"message"];
-    //    [params setObject:UIImagePNGRepresentation([UIImage imageNamed:@"background.jpg"]) forKey:@"source"];
-    //    [SCFacebook graphFacebookForMethodPOST:@"pageios/photos" params:params callBack:^(BOOL success, id result) {
-    //        NSLog(@"%@", result);
-    //    }];
-    
-    
-    
-    //POST page - post adm PAGEIOS or pageID
-    //    [SCFacebook userAccountsCallBack:^(BOOL success, id result) {
-    //
-    //        if (success) {
-    //
-    //            NSDictionary *dicPageAdmin = nil;
-    //
-    //            for (NSDictionary *dic in result[@"data"]) {
-    //
-    //                if ([dic[@"name"] isEqualToString:@"Empresa Teste"]) {
-    //                    dicPageAdmin = dic;
-    //                    break;
-    //                }
-    //            }
-    //
-    //            FBRequest *requestToPost = [[FBRequest alloc] initWithSession:nil
-    //                                                                graphPath:@"633641776679599/feed"
-    //                                                               parameters:@{@"message" : @"Test 000220", @"access_token" : dicPageAdmin[@"access_token"]}
-    //                                                               HTTPMethod:@"POST"];
-    //
-    //            FBRequestConnection *requestToPostConnection = [[FBRequestConnection alloc] init];
-    //            [requestToPostConnection addRequest:requestToPost completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-    //                NSLog(@"%@ %@", error, result);
-    //            }];
-    //
-    //            [requestToPostConnection start];
-    //        }
-    //    }];
-    
-    
-    
-    
-    //POST  video user
-    //    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"movie" ofType:@"mov"];
-    //    NSData *videoData = [NSData dataWithContentsOfFile:filePath];
-    //    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-    //                                   videoData, @"video.mp4",
-    //                                   @"Video Test Description2", @"description",
-    //                                   @"Titulo do video2", @"title",nil];
-    //
-    //    [SCFacebook graphFacebookForMethodPOST:@"me/videos" params:params callBack:^(BOOL success, id result) {
-    //        NSLog(@"%@", result);
-    //    }];
-    
-    
-    //POST video in page
-    //    [SCFacebook userAccountsCallBack:^(BOOL success, id result) {
-    //
-    //        if (success) {
-    //
-    //            NSDictionary *dicPageAdmin = nil;
-    //
-    //            for (NSDictionary *dic in result[@"data"]) {
-    //
-    //                if ([dic[@"name"] isEqualToString:@"Empresa Teste"]) {
-    //                    dicPageAdmin = dic;
-    //                    break;
-    //                }
-    //            }
-    //
-    //            NSString *filePath = [[NSBundle mainBundle] pathForResource:@"movie" ofType:@"mov"];
-    //            NSData *videoData = [NSData dataWithContentsOfFile:filePath];
-    //            NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-    //                                           videoData, @"video.mov",
-    //                                           @"video/quicktime", @"contentType",
-    //                                           @"Video Test Description", @"description",
-    //                                           @"Titulo do video", @"title",
-    //                                           dicPageAdmin[@"access_token"], @"access_token", nil];
-    //
-    //            FBRequest *requestToPost = [[FBRequest alloc] initWithSession:nil
-    //                                                                graphPath:@"633641776679599/videos"
-    //                                                               parameters:params
-    //                                                               HTTPMethod:@"POST"];
-    //
-    //            FBRequestConnection *requestToPostConnection = [[FBRequestConnection alloc] init];
-    //            [requestToPostConnection addRequest:requestToPost completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-    //                NSLog(@"%@ %@", error, result);
-    //            }];
-    //
-    //            [requestToPostConnection start];
-    //        }
-    //    }];
-    
-}
 
 
+
+#pragma mark -
 #pragma mark - UIActionSheetDelegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -400,8 +287,8 @@
                     loadingView.hidden = YES;
                     Alert(@"Alert", [result description]);
                 }];
-                break;
             }
+                break;
                 
                 //Link
             case 2:{
@@ -410,9 +297,9 @@
                     loadingView.hidden = YES;
                     Alert(@"Alert", [result description]);
                 }];
-                break;
             }
                 
+                break;
                 //Photo
             case 3:{
                 UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"]]];
@@ -421,8 +308,10 @@
                     loadingView.hidden = YES;
                     Alert(@"Alert", [result description]);
                 }];
-                break;
             }
+                break;
+            default:
+                break;
         }
     }
     
@@ -439,6 +328,7 @@
                     Alert(@"Alert", [result description]);
                 }];
             }
+                break;
                 
                 //Message
             case 2:{
@@ -482,22 +372,8 @@
             }
                 break;
                 
-                //Message + Photo + Link
-            case 5:{
-                loadingView.hidden = NO;
-                UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"]]];
-                
-                //    Facebook Web address ou pageId
-                //    Example http://www.lucascorrea.com/PageId.png
-                [SCFacebook feedPostForPage:@"633641776679599" message:@"This is message" photo:image link:@"http://www.lucascorrea.com" callBack:^(BOOL success, id result) {
-                    loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
-                }];
-            }
-                break;
-                
                 //Video + title + description
-            case 6:{
+            case 5:{
                 loadingView.hidden = NO;
                 NSString *filePath = [[NSBundle mainBundle] pathForResource:@"movie" ofType:@"mov"];
                 NSData *videoData = [NSData dataWithContentsOfFile:filePath];
@@ -512,7 +388,7 @@
                 break;
                 
                 // Admin Message
-            case 7:{
+            case 6:{
                 loadingView.hidden = NO;
                 
                 //    Facebook Web address
@@ -525,7 +401,7 @@
                 break;
                 
                 // Admin Message + Link
-            case 8:{
+            case 7:{
                 loadingView.hidden = NO;
                 
                 //    Facebook Web address
@@ -539,7 +415,7 @@
                 break;
                 
                 // Admin Message + Photo
-            case 9:{
+            case 8:{
                 loadingView.hidden = NO;
                 UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"]]];
                 
@@ -552,23 +428,8 @@
             }
                 break;
                 
-                // Admin Message + Photo + link
-            case 10:{
-                loadingView.hidden = NO;
-                UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"]]];
-                
-                //    Facebook Web address
-                //    Example http://www.lucascorrea.com/PageId.png
-                [SCFacebook feedPostAdminForPageName:@"Empresa Teste" message:@"This is message" photo:image link:@"http://www.lucascorrea.com" callBack:^(BOOL success, id result) {
-                    loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
-                }];
-                
-            }
-                break;
-                
                 //Admin Video + title + description
-            case 11:{
+            case 9:{
                 loadingView.hidden = NO;
                 NSString *filePath = [[NSBundle mainBundle] pathForResource:@"movie" ofType:@"mov"];
                 NSData *videoData = [NSData dataWithContentsOfFile:filePath];
@@ -626,7 +487,7 @@
                 //Create Album
             case 4:{
                 loadingView.hidden = NO;
-                [SCFacebook createAlbumName:@"Album test" message:@"This is message" privacy:FBAlbumPrivacyAllFriends callBack:^(BOOL success, id result) {
+                [SCFacebook createAlbumName:@"Album test 4" message:@"This is message" privacy: FBAlbumPrivacySelf callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
                     Alert(@"Alert", [result description]);
                 }];
@@ -638,7 +499,7 @@
                 loadingView.hidden = NO;
                 
                 UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"]]];
-                [SCFacebook feedPostForAlbumId:@"103540609708919" photo:image callBack:^(BOOL success, id result) {
+                [SCFacebook feedPostForAlbumId:@"800089266720713" photo:image callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
                     Alert(@"Alert", [result description]);
                 }];
@@ -668,6 +529,7 @@
 
 
 
+#pragma mark -
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -692,6 +554,7 @@
 
 
 
+#pragma mark -
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

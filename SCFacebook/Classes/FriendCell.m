@@ -10,8 +10,6 @@
 
 @implementation FriendCell
 
-@synthesize nameLabel, photoImageView;
-
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];

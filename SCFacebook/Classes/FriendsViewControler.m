@@ -7,8 +7,9 @@
 //
 
 #import "FriendsViewControler.h"
-#import "EGOImageView.h"
 #import "FriendCell.h"
+
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @implementation FriendsViewControler
 
@@ -82,7 +83,8 @@
     FriendCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     cell.nameLabel.text = self.friendsArray[indexPath.row][@"name"];
-    cell.photoImageView.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture", self.friendsArray[indexPath.row][@"id"]]];
+                                                           
+    [cell.photoImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture", self.friendsArray[indexPath.row][@"id"]]]];
     cell.selectionStyle = UITableViewCellSelectionStyleGray;
     return cell;
 }

@@ -264,21 +264,6 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 + (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack;
 
 /**
- *  Post in the page profile with message, photo and link
- *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
- *
- *  Permissions required: publish_actions
- *
- *  @param page     NSString
- *  @param message  NSString
- *  @param photo    UIImage
- *  @param url      NSString
- *  @param callBack (BOOL success, id result)
- */
-+ (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack;
-
-/**
  *  Post in the page profile with video, title and description
  *
  *  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
@@ -333,19 +318,6 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *  @param callBack (BOOL success, id result)
  */
 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
-
-/**
- *  Post on page with administrator profile with a message, photo and link
- *
- *  Permissions required: publish_actions
- *
- *  @param page     NSString
- *  @param message  NSString
- *  @param photo    UIImage
- *  @param url      NSString
- *  @param callBack (BOOL success, id result)
- */
-+ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack;
 
 /**
  *  Post on page with administrator profile with a video, title and description

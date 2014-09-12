@@ -298,21 +298,6 @@
     [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/feed", page] params:@{@"message": message, @"link" : url} callBack:callBack];
 }
 
-- (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack
-{
-    if (![self isSessionValid]) {
-        callBack(NO, @"Not logged in");
-        return;
-    }
-    
-    if (!page) {
-        callBack(NO, @"Page id or name required");
-        return;
-    }
-    
-    [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/photos", page] params:@{@"message": message, @"link" : url, @"source" : UIImagePNGRepresentation(photo)} callBack:callBack];
-}
-
 - (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
 {
     if (![self isSessionValid]) {
@@ -498,49 +483,6 @@
     }];
 }
 
-- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack
-{
-    [SCFacebook getPagesCallBack:^(BOOL success, id result) {
-        
-        if (success) {
-            
-            NSDictionary *dicPageAdmin = nil;
-            
-            for (NSDictionary *dic in result[@"data"]) {
-                
-                if ([dic[@"name"] isEqualToString:page]) {
-                    dicPageAdmin = dic;
-                    break;
-                }
-            }
-            
-            if (!dicPageAdmin) {
-                callBack(NO, @"Page not found!");
-                return;
-            }
-            
-            FBRequest *requestToPost = [[FBRequest alloc] initWithSession:nil
-                                                                graphPath:[NSString stringWithFormat:@"%@/photos",dicPageAdmin[@"id"]]
-                                                               parameters:@{@"message" : message,
-                                                                            @"link" : url,
-                                                                            @"source" : UIImagePNGRepresentation(photo),
-                                                                            @"access_token" : dicPageAdmin[@"access_token"]}
-                                                               HTTPMethod:@"POST"];
-            
-            FBRequestConnection *requestToPostConnection = [[FBRequestConnection alloc] init];
-            [requestToPostConnection addRequest:requestToPost completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                if (error) {
-                    callBack(NO, [error domain]);
-                }else{
-                    callBack(YES, result);
-                }
-            }];
-            
-            [requestToPostConnection start];
-        }
-    }];
-}
-
 - (void)getAlbumsCallBack:(SCFacebookCallback)callBack
 {
     if (![self isSessionValid]) {
@@ -615,7 +557,7 @@
     
     [SCFacebook graphFacebookForMethodPOST:@"me/albums" params:@{@"name" : name,
                                                                  @"message" : message,
-                                                                 @"privacy" : privacyString} callBack:callBack];
+                                                                 @"value" : privacyString} callBack:callBack];
 }
 
 - (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
@@ -686,7 +628,7 @@
             
             openGraphObject.image = @[@{@"url": [result objectForKey:@"uri"], @"user_generated" : @"false" }];
             
-            [self sendForPostOpenGraphPath:path graphObject:openGraphObject objectName:objectName withImage:image callBack:callBack];
+            [self sendForPostOpenGraphPath:path graphObject:openGraphObject objectName:objectName callBack:callBack];
         }
     }];
 }
@@ -813,11 +755,6 @@
     [[SCFacebook shared] feedPostForPage:page message:message link:url callBack:callBack];
 }
 
-+ (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack
-{
-    [[SCFacebook shared] feedPostForPage:page message:message photo:photo link:url callBack:callBack];
-}
-
 + (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
 {
     [[SCFacebook shared] feedPostForPage:page video:videoData title:title description:description callBack:callBack];
@@ -841,11 +778,6 @@
 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
 {
     [[SCFacebook shared] feedPostAdminForPageName:page message:message photo:photo callBack:callBack];
-}
-
-+ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo link:(NSString *)url callBack:(SCFacebookCallback)callBack
-{
-    [[SCFacebook shared] feedPostAdminForPageName:page message:message photo:photo link:url callBack:callBack];
 }
 
 + (void)getAlbumsCallBack:(SCFacebookCallback)callBack

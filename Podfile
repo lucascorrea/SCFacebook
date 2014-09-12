@@ -3,6 +3,6 @@
 
 target "SCFacebook" do
   pod 'Facebook-iOS-SDK', '~>3.17.0'
- pod 'EGOImageLoading'
+  pod 'SDWebImage', '~>3.6'
 end
 
