@@ -59,6 +59,39 @@ Now in it's `AppDelegate` need to add one method and add permissions
 	    return wasHandled;
 	}
 	
+Example Usage
+=============
+
+To use the component is very easy. Import the header for your class.
+
+	#import <SCFacebook/SCFacebook.h>
+	
+	@implementation ViewController
+
+	#pragma mark - Button Action
+	- (IBAction)login:(id)sender {
+	    
+		[SCFacebook loginCallBack:^(BOOL success, id result) {
+	        	if (success) {
+	        	}
+	    	}];
+	}
+
+	- (IBAction)publishYourWallLink:(id)sender {
+		[SCFacebook feedPostWithLinkPath:@"http://www.lucascorrea.com" caption:@"Portfolio" callBack:^(BOOL success, id result) {
+           		if (success) {
+	        	}
+		}];
+	}
+
+	- (IBAction)publishYourWallMessage:(id)sender {
+		[SCFacebook feedPostWithMessage:@"This is message" callBack:^(BOOL success, id result) {
+	   		if (success) {
+	        	}
+		}];
+	}
+
+
 Methods
 ===========
 
@@ -378,37 +411,6 @@ Methods
  
 	+ (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack;
 
-
-Example Usage
-=============
-
-To use the component is very easy. Import the header for your class.
-
-	#import "SCFacebook.h"
-	@implementation ViewController
-
-	#pragma mark - Button Action
-	- (IBAction)login:(id)sender {
-	    
-		[SCFacebook loginCallBack:^(BOOL success, id result) {
-	        	if (success) {
-	        	}
-	    	}];
-	}
-
-	- (IBAction)publishYourWallLink:(id)sender {
-		[SCFacebook feedPostWithLinkPath:@"http://www.lucascorrea.com" caption:@"Portfolio" callBack:^(BOOL success, id result) {
-           		if (success) {
-	        	}
-		}];
-	}
-
-	- (IBAction)publishYourWallMessage:(id)sender {
-		[SCFacebook feedPostWithMessage:@"This is message" callBack:^(BOOL success, id result) {
-	   		if (success) {
-	        	}
-		}];
-	}
 
 License
 =============
