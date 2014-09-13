@@ -4,7 +4,9 @@ The SCFacebook is a simple and cleaner to use the api [Facebook-ios-sdk] (https:
 
 Installation
 =================
-Before you begin development with the Facebook iOS SDK, you will need to install the dev tools iOS, Git (the source control client we use for this SDK) and then clone the lastest version of the SDK from [Facebook-ios-sdk] ( https://github.com/facebook/facebook-ios-sdk).
+
+Before you need to follow the guide to begin using Facebook SDK for iOS -
+[Getting Started with the Facebook iOS SDK](https://developers.facebook.com/docs/ios/getting-started)
 
 
 Getting Started
@@ -13,8 +15,6 @@ Getting Started
 Using [CocoaPods](http://cocoapods.org) to get start, you can add following line to your Podfile:
 
 	pod 'SCFacebook'
-
-[Getting Started with the Facebook iOS SDK](https://developers.facebook.com/docs/ios/getting-started)
 
 Once you have set up the `URL Scheme` and `FacebookAppID` as image below:
 
