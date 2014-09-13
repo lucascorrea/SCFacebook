@@ -14,18 +14,22 @@ Using [CocoaPods](http://cocoapods.org) to get start, you can add following line
 
 	pod 'SCFacebook'
 
+[Getting Started with the Facebook iOS SDK](https://developers.facebook.com/docs/ios/getting-started)
+
 Once you have set up the `URL Scheme` and `FacebookAppID` as image below:
 
 [![]( https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xap1/t39.2178-6/851559_148282688685691_1981352615_n.png)]
 
 Now in it's `AppDelegate` need to add one method and add permissions
 
-	#import "SCFacebook.h"
+	#import <SCFacebook/SCFacebook.h>
+	
 	@implementation AppDelegate
 
 	- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 	{       
     		//Init SCFacebook
+		//Add the necessary permissions
     		[SCFacebook initWithPermissions:@[@"user_about_me",
                                       @"user_birthday",
                                       @"email",
@@ -43,7 +47,7 @@ Now in it's `AppDelegate` need to add one method and add permissions
     
     		return YES;
 	}
-
+ 
 
 	#pragma mark - 
 	#pragma mark - SCFacebook Handle
