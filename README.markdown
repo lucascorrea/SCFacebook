@@ -1,4 +1,4 @@
-The SCFacebook is a simpler and cleaner to use the api [Facebook-ios-sdk] (https://github.com/facebook/facebook-ios-sdk) with Blocks.
+The SCFacebook is a simple and cleaner to use the api [Facebook-ios-sdk] (https://github.com/facebook/facebook-ios-sdk) with Blocks.
 
 ![SCFacebook Demo](http://www.lucascorrea.com/Git/SCFacebookDemo.gif)
 
@@ -14,11 +14,11 @@ Using [CocoaPods](http://cocoapods.org) to get start, you can add following line
 
 	pod 'SCFacebook'
 
-Once you have set up the `URL Scheme` as image below:
+Once you have set up the `URL Scheme` and `FacebookAppID` as image below:
 
 [![]( https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xap1/t39.2178-6/851559_148282688685691_1981352615_n.png)]
 
-Now in it's `AppDelegate` need to add two methods and add APP ID
+Now in it's `AppDelegate` need to add one method and add permissions
 
 	#import "SCFacebook.h"
 	@implementation AppDelegate
