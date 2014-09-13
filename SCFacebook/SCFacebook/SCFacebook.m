@@ -716,7 +716,7 @@
 
 + (void)feedPostWithVideo:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
 {
-    [SCFacebook shared].postType = FBPostTypePhoto;
+    [SCFacebook shared].postType = FBPostTypeVideo;
     [[SCFacebook shared] feedPostWithLinkPath:nil caption:title message:description photo:nil video:videoData callBack:callBack];
 }
 

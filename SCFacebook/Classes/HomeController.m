@@ -42,6 +42,16 @@
     // Do any additional setup after loading the view, typically from a nib.
     self.title = @"SCFacebook";
     
+    //Loading
+    loadingView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    loadingView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.8];
+    UIActivityIndicatorView *aiView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [loadingView addSubview:aiView];
+    [aiView startAnimating];
+    aiView.center =  CGPointMake(160, 240);
+    [self.navigationController.view addSubview:loadingView];
+    loadingView.hidden = YES;
+    
     [self.itemsArray addObject:@"Login"];
     [self.itemsArray addObject:@"Logout"];
     [self.itemsArray addObject:@"Get User info"];
@@ -144,7 +154,7 @@
                       delegate:self
                       cancelButtonTitle:nil
                       destructiveButtonTitle:@"Cancel"
-                      otherButtonTitles:@"Message", @"Link", @"Photo", nil];
+                      otherButtonTitles:@"Message", @"Link", @"Photo", @"Video", nil];
     self.userSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [self.userSheet showFromRect:self.view.bounds inView:self.view animated:YES];
 }
@@ -310,6 +320,20 @@
                 }];
             }
                 break;
+                //Movie
+            case 4:{
+                loadingView.hidden = NO;
+                
+                NSString *filePath = [[NSBundle mainBundle] pathForResource:@"SCFacebook" ofType:@"mov"];
+                NSData *videoData = [NSData dataWithContentsOfFile:filePath];
+                
+                [SCFacebook feedPostWithVideo:videoData title:@"This is title" description:@"This is description" callBack:^(BOOL success, id result) {
+                    loadingView.hidden = YES;
+                    Alert(@"Alert", [result description]);
+                }];
+
+            }
+                break;
             default:
                 break;
         }
@@ -375,7 +399,7 @@
                 //Video + title + description
             case 5:{
                 loadingView.hidden = NO;
-                NSString *filePath = [[NSBundle mainBundle] pathForResource:@"movie" ofType:@"mov"];
+                NSString *filePath = [[NSBundle mainBundle] pathForResource:@"SCFacebook" ofType:@"mov"];
                 NSData *videoData = [NSData dataWithContentsOfFile:filePath];
                 
                 //    Facebook Web address ou pageId
@@ -431,7 +455,7 @@
                 //Admin Video + title + description
             case 9:{
                 loadingView.hidden = NO;
-                NSString *filePath = [[NSBundle mainBundle] pathForResource:@"movie" ofType:@"mov"];
+                NSString *filePath = [[NSBundle mainBundle] pathForResource:@"SCFacebook" ofType:@"mov"];
                 NSData *videoData = [NSData dataWithContentsOfFile:filePath];
                 
                 //    Facebook Web address
@@ -487,7 +511,7 @@
                 //Create Album
             case 4:{
                 loadingView.hidden = NO;
-                [SCFacebook createAlbumName:@"Album test 4" message:@"This is message" privacy: FBAlbumPrivacySelf callBack:^(BOOL success, id result) {
+                [SCFacebook createAlbumName:@"Album test" message:@"This is message" privacy: FBAlbumPrivacySelf callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
                     Alert(@"Alert", [result description]);
                 }];

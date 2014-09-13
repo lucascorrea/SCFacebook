@@ -32,17 +32,6 @@
                                       @"user_videos",
                                       @"public_profile"]];
     
-    
-    //Loading
-    loadingView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-	loadingView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.8];
-	UIActivityIndicatorView *aiView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-	[loadingView addSubview:aiView];
-	[aiView startAnimating];
-	aiView.center =  CGPointMake(160, 240);
-	[self.window addSubview:loadingView];
-	loadingView.hidden = YES;
-    
     return YES;
 }
 
