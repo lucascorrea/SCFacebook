@@ -1,4 +1,6 @@
-The SCFacebook is a simple and cleaner to use the api [Facebook-ios-sdk] (https://github.com/facebook/facebook-ios-sdk) with Blocks.
+The SCFacebook 3.0 is a simple and cleaner to use the api [Facebook-ios-sdk] (https://github.com/facebook/facebook-ios-sdk) with Blocks.
+
+Facebook SDK 3.18 for iOS
 
 ![SCFacebook Demo](http://www.lucascorrea.com/Git/SCFacebookDemo.gif)
 
