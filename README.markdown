@@ -31,7 +31,7 @@ IOS 9 is required this add fields like the image below:
 
 Now in it's `AppDelegate` need to add one method and add permissions
 
-  #import <SCFacebook/SCFacebook.h>
+  #import < SCFacebook/SCFacebook.h >
   
   @implementation AppDelegate
 
@@ -59,34 +59,34 @@ Now in it's `AppDelegate` need to add one method and add permissions
   }
  
 
-      #pragma mark - 
-      #pragma mark - SCFacebook Handle
-      
-      - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-      {
-          return [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                              openURL:url
-                                                    sourceApplication:sourceApplication
-                                                           annotation:annotation];
-      }
-  
+	      #pragma mark - 
+	      #pragma mark - SCFacebook Handle
+	      
+	      - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+	      {
+	          return [[FBSDKApplicationDelegate sharedInstance] application:application
+	                                                              openURL:url
+	                                                    sourceApplication:sourceApplication
+	                                                           annotation:annotation];
+	      }
+	  
 Example Usage
 =============
 
 To use the component is very easy. Import the header for your class.
 
-  #import < SCFacebook/SCFacebook.h >
+	  #import < SCFacebook/SCFacebook.h >
   
-  @implementation ViewController
+	  @implementation ViewController
 
-  #pragma mark - Button Action
-  - (IBAction)login:(id)sender {
+	  #pragma mark - Button Action
+	  - (IBAction)login:(id)sender {
       
-    [SCFacebook loginCallBack:^(BOOL success, id result) {
-            if (success) {
-            }
-        }];
-  }
+	    [SCFacebook loginCallBack:^(BOOL success, id result) {
+	            if (success) {
+	            }
+	     }];
+	  }
 
     - (IBAction)publishYourWallLink:(id)sender {
       [SCFacebook feedPostWithLinkPath:@"http://www.lucascorrea.com" caption:@"Portfolio" callBack:^(BOOL success, id result) {
@@ -133,7 +133,8 @@ Methods
   Facebook login with Behavior
   https://developers.facebook.com/docs/ios/graph
    @param callBack (BOOL success, id result)
-    + (void)loginWithBehavior:(FBSDKLoginBehavior)behavior CallBack:(SCFacebookCallback)callBack;
+   
+	   + (void)loginWithBehavior:(FBSDKLoginBehavior)behavior CallBack:(SCFacebookCallback)callBack;
 
   Facebook logout
   https://developers.facebook.com/docs/ios/graph
@@ -148,7 +149,7 @@ Methods
    @param fields   fields example: id, name, email, birthday, about, picture
   @param callBack (BOOL success, id result)
  
-  + (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
+	+ (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
 
 
   This will only return any friends who have used (via Facebook Login) the app making the request.
@@ -177,7 +178,7 @@ Methods
    @param message  NSString
   @param callBack (BOOL success, id result)
  
-  + (void)feedPostWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack;
+	+ (void)feedPostWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack;
 
 
   Post in the user profile with photo and caption
@@ -215,14 +216,14 @@ Methods
    @param preview URL optional
    @param callBack (BOOL success, id result)
 
-   + (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack;
+	 + (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack;
 
   Get pages in user
    https://developers.facebook.com/docs/graph-api/reference/v2.1/page
    Permissions required: manage_pages
    @param callBack (BOOL success, id result)
  
-   + (void)getPagesCallBack:(SCFacebookCallback)callBack;
+	 + (void)getPagesCallBack:(SCFacebookCallback)callBack;
 
 
    Get page with id
@@ -233,7 +234,7 @@ Methods
    @param pageId   Facebook Web address ou pageId
   @param callBack (BOOL success, id result)
  
-   + (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack;
+	 + (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack;
 
 
   Post in the page profile with message
@@ -243,7 +244,7 @@ Methods
   @param message  NSString
   @param callBack (BOOL success, id result)
  
-   + (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack;
+	 + (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack;
 
 
   Post in the page profile with message and photo
@@ -254,7 +255,7 @@ Methods
   @param photo    UIImage
   @param callBack (BOOL success, id result)
  
-   + (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
+	 + (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
 
 
   Post in the page profile with message and link
@@ -265,7 +266,7 @@ Methods
   @param url      NSString
   @param callBack (BOOL success, id result)
  
-  + (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack;
+	+ (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack;
 
 
   Post in the page profile with video, title and description
@@ -277,7 +278,7 @@ Methods
   @param description NSString
   @param callBack    (BOOL success, id result)
  
-   + (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack;
+	 + (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack;
 
 
   Post on page with administrator profile with a message
@@ -287,7 +288,7 @@ Methods
   @param message  NSString
   @param callBack (BOOL success, id result)
  
-   + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack;
+	 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack;
 
 
   Post on page with administrator profile with a message and link
@@ -298,7 +299,7 @@ Methods
   @param url      NSString
   @param callBack (BOOL success, id result)
  
-   + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack;
+	 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack;
 
 
   Post on page with administrator profile with a message and photo
@@ -309,7 +310,7 @@ Methods
   @param photo    UIImage
   @param callBack (BOOL success, id result)
  
-   + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
+	 + (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
 
 
   Post on page with administrator profile with a video, title and description
@@ -321,7 +322,7 @@ Methods
   @param description NSString
   @param callBack    (BOOL success, id result)
  
-  + (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack;
+	+ (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack;
 
 
   Get albums in user
@@ -329,7 +330,7 @@ Methods
    Permissions required: user_photos
    @param callBack (BOOL success, id result)
  
-  + (void)getAlbumsCallBack:(SCFacebookCallback)callBack;
+	+ (void)getAlbumsCallBack:(SCFacebookCallback)callBack;
 
 
   Get album with id
@@ -338,7 +339,7 @@ Methods
    @param albumId  NSString
   @param callBack (BOOL success, id result)
  
-  + (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
+	+ (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
 
 
   Get photos the album with id
@@ -347,7 +348,7 @@ Methods
    @param albumId  NSString
   @param callBack (BOOL success, id result)
  
-   + (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
+	 + (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
 
 
   Create album the user
@@ -358,7 +359,7 @@ Methods
   @param privacy  ENUM
   @param callBack (BOOL success, id result)
  
-  + (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack;
+	+ (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack;
 
 
   Post the photo album in your user profile
@@ -368,7 +369,7 @@ Methods
   @param photo    UIImage
   @param callBack (BOOL success, id result)
  
-  + (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
+	+ (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack;
 
 
   Post open graph 
@@ -387,7 +388,7 @@ Methods
    @param viewController  UIViewController
    @param callBack        (BOOL success, id result)
  
-  + (void)sendForPostOpenGraphWithActionType:(NSString *)actionType graphObject:(FBSDKShareOpenGraphObject *)openGraphObject objectName:(NSString *)objectName viewController:(UIViewController *)viewController callBack:(SCFacebookCallback)callBack;
+	+ (void)sendForPostOpenGraphWithActionType:(NSString *)actionType graphObject:(FBSDKShareOpenGraphObject *)openGraphObject objectName:(NSString *)objectName viewController:(UIViewController *)viewController callBack:(SCFacebookCallback)callBack;
 
 
   If not on the list in SCFacebook method, this method can be used to make calls via the graph API GET
@@ -397,7 +398,7 @@ Methods
   @param params   NSDictionary
   @param callBack (BOOL success, id result)
  
-  + (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack;
+	+ (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack;
 
 
   If not on the list in SCFacebook method, this method can be used to make calls via the graph API POST
@@ -407,7 +408,7 @@ Methods
   @param params   NSDictionary
   @param callBack (BOOL success, id result)
  
-   + (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack;
+	 + (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack;
 
 
 License
