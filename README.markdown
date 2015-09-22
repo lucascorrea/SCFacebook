@@ -112,7 +112,7 @@ Methods
    Permissions are strings that are passed along with a login request or an API call. Here are two examples of permissions:
    email - Access to a person's primary email address.
   user_likes - Access to the list of things a person likes.
-   https://developers.facebook.com/docs/facebook-login/permissions/v2.1
+   https://developers.facebook.com/docs/facebook-login/permissions/v2.4
    @param permissions
  
     + (void)initWithReadPermissions:(NSArray *)readPermissions publishPermissions:(NSArray *)publishPermissions;
@@ -145,7 +145,7 @@ Methods
 
 
   Get the data from the logged in user by passing the fields.
-   https://developers.facebook.com/docs/facebook-login/permissions/v2.1#reference-public_profile
+   https://developers.facebook.com/docs/facebook-login/permissions/v2.4#reference-public_profile
    Permissions required: public_profile...
    @param fields   fields example: id, name, email, birthday, about, picture
   @param callBack (BOOL success, id result)
@@ -155,7 +155,7 @@ Methods
 
   This will only return any friends who have used (via Facebook Login) the app making the request.
   If a friend of the person declines the user_friends permission, that friend will not show up in the friend list for this person.
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/user/friends/
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/user/friends/
    Permissions required: user_friends
    @param callBack (BOOL success, id result)
  
@@ -163,7 +163,7 @@ Methods
 
 
   Post in the user profile with link and caption
-  https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
+  https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
    Permissions required: publish_actions
    @param url      NSString
   @param caption  NSString
@@ -174,7 +174,7 @@ Methods
 
   Post in the user profile with message
  
- https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
+ https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
    Permissions required: publish_actions
    @param message  NSString
   @param callBack (BOOL success, id result)
@@ -183,7 +183,7 @@ Methods
 
 
   Post in the user profile with photo and caption
-  https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
+  https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
    Permissions required: publish_actions
    @param photo    UIImage
   @param caption  NSString
@@ -193,7 +193,7 @@ Methods
 
 
   Post in the user profile with video, title and description
-  https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
+  https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
    Permissions required: publish_actions
    @param videoData   NSData
   @param title       NSString
@@ -204,7 +204,7 @@ Methods
 
 
   The feed of posts (including status updates) and links published by this person, or by others on this person's profile.
-  https://developers.facebook.com/docs/graph-api/reference/v2.1/user/feed
+  https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
    Permissions required: read_stream
    @param callBack (BOOL success, id result)
  
@@ -220,7 +220,7 @@ Methods
 	 + (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack;
 
   Get pages in user
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/page
    Permissions required: manage_pages
    @param callBack (BOOL success, id result)
  
@@ -230,7 +230,7 @@ Methods
    Get page with id
    Facebook Web address ou pageId
   Example http://www.lucascorrea.com/PageId.png
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/page
    Permissions required: manage_pages
    @param pageId   Facebook Web address ou pageId
   @param callBack (BOOL success, id result)
@@ -239,7 +239,7 @@ Methods
 
 
   Post in the page profile with message
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/page
    Permissions required: publish_actions
    @param page     NSString
   @param message  NSString
@@ -249,7 +249,7 @@ Methods
 
 
   Post in the page profile with message and photo
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/page
    Permissions required: publish_actions
    @param page     NSString
   @param message  NSString
@@ -260,7 +260,7 @@ Methods
 
 
   Post in the page profile with message and link
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/page
    Permissions required: publish_actions
    @param page     NSString
   @param message  NSString
@@ -271,7 +271,7 @@ Methods
 
 
   Post in the page profile with video, title and description
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/page
    Permissions required: publish_actions
    @param page        NSString
   @param videoData   NSData
@@ -283,7 +283,7 @@ Methods
 
 
   Post on page with administrator profile with a message
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/page
    Permissions required: publish_actions
    @param page     NSString
   @param message  NSString
@@ -293,7 +293,7 @@ Methods
 
 
   Post on page with administrator profile with a message and link
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/page
    Permissions required: publish_actions
    @param page     NSString
   @param message  NSString
@@ -305,7 +305,7 @@ Methods
 
   Post on page with administrator profile with a message and photo
    Permissions required: publish_actions
-  https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
     @param page     NSString
   @param message  NSString
   @param photo    UIImage
@@ -315,7 +315,7 @@ Methods
 
 
   Post on page with administrator profile with a video, title and description
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/page
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/page
    Permissions required: publish_actions
    @param page        NSString
   @param videoData   NSData
@@ -327,7 +327,7 @@ Methods
 
 
   Get albums in user
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/user/albums
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/user/albums
    Permissions required: user_photos
    @param callBack (BOOL success, id result)
  
@@ -335,7 +335,7 @@ Methods
 
 
   Get album with id
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/user/albums
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/user/albums
    Permissions required: user_photos
    @param albumId  NSString
   @param callBack (BOOL success, id result)
@@ -344,7 +344,7 @@ Methods
 
 
   Get photos the album with id
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/album/photos
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/album/photos
    Permissions required: user_photos
    @param albumId  NSString
   @param callBack (BOOL success, id result)
@@ -353,7 +353,7 @@ Methods
 
 
   Create album the user
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/user/albums
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/user/albums
    Permissions required: publish_actions and user_photos
    @param name     NSString
   @param message  NSString
@@ -364,7 +364,7 @@ Methods
 
 
   Post the photo album in your user profile
-   https://developers.facebook.com/docs/graph-api/reference/v2.1/album/photos
+   https://developers.facebook.com/docs/graph-api/reference/v2.4/album/photos
    Permissions required: publish_actions
    @param albumId  NSString
   @param photo    UIImage
