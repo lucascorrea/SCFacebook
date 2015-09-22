@@ -17,7 +17,7 @@ Getting Started
 
 Using [CocoaPods](http://cocoapods.org) to get start, you can add following line to your Podfile:
 
-  pod 'SCFacebook'
+	  pod 'SCFacebook'
 
 Once you have set up the `URL Scheme` and `FacebookAppID` as image below:
 
@@ -31,12 +31,13 @@ IOS 9 is required this add fields like the image below:
 
 Now in it's `AppDelegate` need to add one method and add permissions
 
-  #import < SCFacebook/SCFacebook.h >
+	  #import <SCFacebook/SCFacebook.h>
   
-  @implementation AppDelegate
+	  @implementation AppDelegate
 
-  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-  {       
+	  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+	  {       
+
         //Init SCFacebook
         //Add the necessary permissions
 
@@ -75,7 +76,7 @@ Example Usage
 
 To use the component is very easy. Import the header for your class.
 
-	  #import < SCFacebook/SCFacebook.h >
+	  #import <SCFacebook/SCFacebook.h>
   
 	  @implementation ViewController
 
