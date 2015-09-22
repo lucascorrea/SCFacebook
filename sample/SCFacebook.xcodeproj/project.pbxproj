@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		3CC35B4490D240AB97B379D9 /* libPods-SCFacebook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F027DAB94B4688854BBCB2 /* libPods-SCFacebook.a */; };
 		4DF43AC7147EBFB500A7D104 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF43AC6147EBFB500A7D104 /* QuartzCore.framework */; };
+		A006F5841BB198290024416F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A006F5821BB198290024416F /* AppDelegate.m */; settings = {ASSET_TAGS = (); }; };
 		A0C801E219C3BAE50045D60E /* SCFacebook.mov in Resources */ = {isa = PBXBuildFile; fileRef = A0C801DD19C3BAE50045D60E /* SCFacebook.mov */; };
 		F91989D115143C9700A39D1E /* HomeController.m in Sources */ = {isa = PBXBuildFile; fileRef = F91989D015143C9700A39D1E /* HomeController.m */; };
 		F91989D815143CAC00A39D1E /* FriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F91989D315143CAC00A39D1E /* FriendCell.m */; };
 		F91989DA15143CAC00A39D1E /* FriendsViewControler.m in Sources */ = {isa = PBXBuildFile; fileRef = F91989D615143CAC00A39D1E /* FriendsViewControler.m */; };
-		F9198A1715143D3900A39D1E /* SCFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = F9198A1615143D3900A39D1E /* SCFacebook.m */; };
 		F945184C18314C550083D862 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F945184A18314C550083D862 /* Main.storyboard */; };
 		F945184E18314FC80083D862 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F945184D18314FC80083D862 /* Images.xcassets */; };
 		F9451851183153290083D862 /* HomeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9451850183153290083D862 /* HomeCell.m */; };
@@ -22,12 +22,13 @@
 		F95F26E2147DCE8600715CC8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F95F26E1147DCE8600715CC8 /* CoreGraphics.framework */; };
 		F95F26E8147DCE8600715CC8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F95F26E6147DCE8600715CC8 /* InfoPlist.strings */; };
 		F95F26EA147DCE8600715CC8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F95F26E9147DCE8600715CC8 /* main.m */; };
-		F95F26EE147DCE8600715CC8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F95F26ED147DCE8600715CC8 /* AppDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4DF43AC6147EBFB500A7D104 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4F1AC3C1187EE849E37484C8 /* Pods-SCFacebook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SCFacebook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SCFacebook/Pods-SCFacebook.debug.xcconfig"; sourceTree = "<group>"; };
+		A006F5821BB198290024416F /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
+		A006F5831BB198290024416F /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
 		A0C801DD19C3BAE50045D60E /* SCFacebook.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = SCFacebook.mov; sourceTree = "<group>"; };
 		B5F027DAB94B4688854BBCB2 /* libPods-SCFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SCFacebook.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4394F28F6603E2943D65518 /* Pods-SCFacebook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SCFacebook.release.xcconfig"; path = "Pods/Target Support Files/Pods-SCFacebook/Pods-SCFacebook.release.xcconfig"; sourceTree = "<group>"; };
@@ -37,8 +38,6 @@
 		F91989D315143CAC00A39D1E /* FriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendCell.m; path = Classes/FriendCell.m; sourceTree = "<group>"; };
 		F91989D515143CAC00A39D1E /* FriendsViewControler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendsViewControler.h; path = Classes/FriendsViewControler.h; sourceTree = "<group>"; };
 		F91989D615143CAC00A39D1E /* FriendsViewControler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendsViewControler.m; path = Classes/FriendsViewControler.m; sourceTree = "<group>"; };
-		F9198A1515143D3900A39D1E /* SCFacebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCFacebook.h; path = SCFacebook/SCFacebook.h; sourceTree = "<group>"; };
-		F9198A1615143D3900A39D1E /* SCFacebook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCFacebook.m; path = SCFacebook/SCFacebook.m; sourceTree = "<group>"; };
 		F945184B18314C550083D862 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = SCFacebook/en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F945184D18314FC80083D862 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
 		F945184F183153290083D862 /* HomeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HomeCell.h; path = Classes/HomeCell.h; sourceTree = "<group>"; };
@@ -51,8 +50,6 @@
 		F95F26E7147DCE8600715CC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F95F26E9147DCE8600715CC8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F95F26EB147DCE8600715CC8 /* SCFacebook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SCFacebook-Prefix.pch"; sourceTree = "<group>"; };
-		F95F26EC147DCE8600715CC8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		F95F26ED147DCE8600715CC8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,8 +116,8 @@
 		F9564FEA1480561E000A9AA0 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				F95F26EC147DCE8600715CC8 /* AppDelegate.h */,
-				F95F26ED147DCE8600715CC8 /* AppDelegate.m */,
+				A006F5831BB198290024416F /* AppDelegate.h */,
+				A006F5821BB198290024416F /* AppDelegate.m */,
 				F9451853183153370083D862 /* Home */,
 				F9694EB5148073B3000B8A59 /* Friend */,
 			);
@@ -161,8 +158,6 @@
 		F95F26E3147DCE8600715CC8 /* SCFacebook */ = {
 			isa = PBXGroup;
 			children = (
-				F9198A1515143D3900A39D1E /* SCFacebook.h */,
-				F9198A1615143D3900A39D1E /* SCFacebook.m */,
 				F9564FEA1480561E000A9AA0 /* Classes */,
 				A0C801D619C3BAE50045D60E /* Resources */,
 				F95F26E4147DCE8600715CC8 /* Supporting Files */,
@@ -301,12 +296,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				F95F26EA147DCE8600715CC8 /* main.m in Sources */,
-				F95F26EE147DCE8600715CC8 /* AppDelegate.m in Sources */,
 				F9451851183153290083D862 /* HomeCell.m in Sources */,
+				A006F5841BB198290024416F /* AppDelegate.m in Sources */,
 				F91989D115143C9700A39D1E /* HomeController.m in Sources */,
 				F91989D815143CAC00A39D1E /* FriendCell.m in Sources */,
 				F91989DA15143CAC00A39D1E /* FriendsViewControler.m in Sources */,
-				F9198A1715143D3900A39D1E /* SCFacebook.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SCFacebook"
-  s.version      = "3.0"
+  s.version      = "4.0"
   s.summary      = "The SCFacebook is a simpler and cleaner to use the api facebook-ios-sdk Objective-C "
 
   s.description  = <<-DESC
@@ -61,10 +61,10 @@ Pod::Spec.new do |s|
   #
 
   # s.platform     = :ios
-   s.platform     = :ios, "6.0"
+   s.platform     = :ios, "7.0"
 
   #  When using multiple platforms
-   s.ios.deployment_target = "6.0"
+   s.ios.deployment_target = "7.0"
   # s.osx.deployment_target = "10.7"
 
 
@@ -74,7 +74,8 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-   s.source       = { :git => "https://github.com/lucascorrea/SCFacebook.git", :tag => "3.0" }
+   # s.source       = { :git => "https://github.com/lucascorrea/SCFacebook.git", :tag => "4.0" }
+   s.source       = { :git => "https://github.com/lucascorrea/SCFacebook.git", :branch => "facebook4.0" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -127,7 +128,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  s.dependency "Facebook-iOS-SDK", "~> 3.17.0"
-  s.dependency "SDWebImage", "~>3.6"
+  s.dependency "Facebook-iOS-SDK"
+  s.dependency "SDWebImage"
 
 end

@@ -4,5 +4,6 @@
 target "SCFacebook" do
   pod 'Facebook-iOS-SDK'
   pod 'SDWebImage'
+  pod 'SCFacebook', :git => 'https://github.com/lucascorrea/SCFacebook.git', :branch => 'facebook4.0'
 end
 
