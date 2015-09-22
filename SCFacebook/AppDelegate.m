@@ -17,36 +17,52 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     //Init SCFacebook
-    [SCFacebook initWithPermissions:@[@"user_about_me",
-                                      @"user_birthday",
-                                      @"email",
-                                      @"user_photos",
-                                      @"publish_stream",
-                                      @"user_events",
-                                      @"friends_events",
-                                      @"manage_pages",
-                                      @"share_item",
-                                      @"publish_actions",
-                                      @"user_friends",
-                                      @"manage_pages",
-                                      @"user_videos",
-                                      @"public_profile"]];
+    [SCFacebook initWithReadPermissions:@[@"user_about_me",
+                                          @"user_birthday",
+                                          @"email",
+                                          @"user_photos",
+                                          @"user_events",
+                                          @"user_friends",
+                                          @"user_videos",
+                                          @"public_profile"]
+                     publishPermissions:@[@"manage_pages",
+                                          @"publish_actions",
+                                          @"publish_pages"]
+     ];
     
-    return YES;
+    [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                    didFinishLaunchingWithOptions:launchOptions];
+    
 }
 
 
 
 
-#pragma mark - 
+#pragma mark -
 #pragma mark - SCFacebook Handle
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    BOOL wasHandled = [FBAppCall handleOpenURL:url
-                             sourceApplication:sourceApplication];
-    return wasHandled;
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                          openURL:url
+                                                sourceApplication:sourceApplication
+                                                       annotation:annotation];
 }
 
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [FBSDKAppEvents activateApp];
+    
+    // Do the following if you use Mobile App Engagement Ads to get the deferred
+    // app link after your app is installed.
+    [FBSDKAppLinkUtility fetchDeferredAppLink:^(NSURL *url, NSError *error) {
+        if (error) {
+            NSLog(@"Received error while fetching deferred app link %@", error);
+        }
+        if (url) {
+            [[UIApplication sharedApplication] openURL:url];
+        }
+    }];
+}
 
 @end

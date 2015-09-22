@@ -15,7 +15,9 @@
 
 #define RemoveNull(field) ([[result objectForKey:field] isKindOfClass:[NSNull class]]) ? @"" : [result objectForKey:field];
 
-@interface HomeController ()
+@interface HomeController (){
+        UIView *loadingView;
+}
 
 @property (strong, nonatomic) NSMutableArray *itemsArray;
 @property (strong, nonatomic) UIActionSheet *userSheet;
@@ -48,7 +50,7 @@
     UIActivityIndicatorView *aiView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     [loadingView addSubview:aiView];
     [aiView startAnimating];
-    aiView.center =  CGPointMake(160, 240);
+    aiView.center =  self.view.center;
     [self.navigationController.view addSubview:loadingView];
     loadingView.hidden = YES;
     
@@ -95,6 +97,22 @@
 #pragma mark -
 #pragma mark - Methods
 
+
+- (void)showMessage:(NSString *)message
+{
+    if ([UIAlertController class]) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Alert" message:message preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [alertController addAction:ok];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+        
+    } else {
+        [[[UIAlertView alloc]initWithTitle:@"Alert" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+    }
+}
+
 - (void)getUserInfo
 {
     loadingView.hidden = NO;
@@ -105,7 +123,7 @@
             loadingView.hidden = YES;
         }else{
             loadingView.hidden = YES;
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }
     }];
 }
@@ -113,13 +131,15 @@
 - (void)login
 {
     loadingView.hidden = NO;
+    [self.navigationController popViewControllerAnimated:NO];
     
     [SCFacebook loginCallBack:^(BOOL success, id result) {
         loadingView.hidden = YES;
+
         if (success) {
-            Alert(@"Alert", @"Success");
+            [self showMessage:@"Success"];
         }else{
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }
     }];
 }
@@ -128,7 +148,7 @@
 {
     [SCFacebook logoutCallBack:^(BOOL success, id result) {
         if (success) {
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }
     }];
 }
@@ -140,9 +160,10 @@
     [SCFacebook getUserFriendsCallBack:^(BOOL success, id result) {
         loadingView.hidden = YES;
         if (success) {
-            [self performSegueWithIdentifier:@"FriendSegue" sender:result];
+            
+            [self performSegueWithIdentifier:@"FriendSegue" sender:[result[@"data"] mutableCopy]];
         }else{
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }
     }];
 }
@@ -214,19 +235,25 @@
 - (void)openGraph
 {
     loadingView.hidden = NO;
-    NSMutableDictionary<FBOpenGraphObject> *object = [FBGraphObject
-                                                      openGraphObjectForPostWithType:@"fblucascorreatest:graphtest"
-                                                      title:@"My first post with open graph"
-                                                      image:@"https://fbstatic-a.akamaihd.net/images/devsite/attachment_blank.png"
-                                                      url:@"http://www.lucascorrea.com"
-                                                      description:@"Description"];
     
-    [SCFacebook sendForPostOpenGraphPath:@"/me/fblucascorreatest:test" graphObject:object objectName:@"graphtest" callBack:^(BOOL success, id result) {
+    // Create an object
+    NSURL *imageURL = [NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"];
+    FBSDKSharePhoto *photo = [FBSDKSharePhoto photoWithImageURL:imageURL userGenerated:NO];
+    NSDictionary *properties = @{
+                                 @"og:type": @"fblucasnamespace:actionobjecttype",
+                                 @"og:title": @"Sample ActionObjectType",
+                                 @"og:description": @"fdsfdfsdfsdfdsfsdf",
+                                 @"og:url": @"http://www.lucascorrea.com",
+                                 @"og:image": @[photo]
+                                 };
+    FBSDKShareOpenGraphObject *object = [FBSDKShareOpenGraphObject objectWithProperties:properties];
+    
+    [SCFacebook sendForPostOpenGraphWithActionType:@"fblucasnamespace:actiontest" graphObject:object objectName:@"actionobjecttype" viewController:self callBack:^(BOOL success, id result) {
         loadingView.hidden = YES;
         if (success) {
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }else{
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }
     }];
 }
@@ -235,31 +262,24 @@
 {
     loadingView.hidden = NO;
     
-    // instantiate a Facebook Open Graph object
-    NSMutableDictionary<FBOpenGraphObject> *object = [FBGraphObject openGraphObjectForPost];
-    // specify that this Open Graph object will be posted to Facebook
-    object.provisionedForPost = YES;
-    
-    // for og:title
-    object[@"title"] = @"My first post with open graph";
-    
-    // for og:type, this corresponds to the Namespace you've set for your app and the object type name
-    object[@"type"] = @"fblucascorreatest:graphtest";
-    
-    // for og:description
-    object[@"description"] = @"Description";
-    
-    // for og:url, we cover how this is used in the "Deep Linking" section below
-    object[@"url"] = @"http://www.lucascorrea.com";
-    
+    // Create an object
     UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"]]];
+    FBSDKSharePhoto *photo = [FBSDKSharePhoto photoWithImage:image userGenerated:NO];
+    NSDictionary *properties = @{
+                                 @"og:type": @"fblucasnamespace:actionobjecttype",
+                                 @"og:title": @"Sample ActionObjectType",
+                                 @"og:description": @"fdsfdfsdfsdfdsfsdf",
+                                 @"og:url": @"http://www.lucascorrea.com",
+                                 @"og:image": @[photo]
+                                 };
+    FBSDKShareOpenGraphObject *object = [FBSDKShareOpenGraphObject objectWithProperties:properties];
     
-    [SCFacebook sendForPostOpenGraphPath:@"/me/fblucascorreatest:test" graphObject:object objectName:@"graphtest" withImage:image callBack:^(BOOL success, id result) {
+    [SCFacebook sendForPostOpenGraphWithActionType:@"fblucasnamespace:actiontest" graphObject:object objectName:@"actionobjecttype" viewController:self callBack:^(BOOL success, id result) {
         loadingView.hidden = YES;
         if (success) {
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }else{
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }
     }];
 }
@@ -267,11 +287,14 @@
 
 - (void)inviteFriends
 {
-    [SCFacebook inviteFriendsWithMessage:@"Invite Friends" callBack:^(BOOL success, id result) {
+    NSURL *appLink = [NSURL URLWithString:@"https://fb.me/1026080090769628"];
+    NSURL *previewImage = [NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"];
+    
+    [SCFacebook inviteFriendsWithAppLinkURL:appLink previewImageURL:previewImage callBack:^(BOOL success, id result) {
         if (success) {
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }else{
-            Alert(@"Alert", [result description]);
+            [self showMessage:[result description]];
         }
     }];
 }
@@ -295,7 +318,7 @@
                 loadingView.hidden = NO;
                 [SCFacebook feedPostWithMessage:@"This is message" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -305,7 +328,7 @@
                 loadingView.hidden = NO;
                 [SCFacebook feedPostWithLinkPath:@"http://www.lucascorrea.com" caption:@"Portfolio" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 
@@ -316,7 +339,7 @@
                 loadingView.hidden = NO;
                 [SCFacebook feedPostWithPhoto:image caption:@"This is message with photo" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -329,7 +352,7 @@
                 
                 [SCFacebook feedPostWithVideo:videoData title:@"This is title" description:@"This is description" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
 
             }
@@ -349,7 +372,7 @@
                 loadingView.hidden = NO;
                 [SCFacebook getPagesCallBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -362,7 +385,7 @@
                 //    Example http://www.lucascorrea.com/PageId.png
                 [SCFacebook feedPostForPage:@"633641776679599" message:@"This is message" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -376,7 +399,7 @@
                 //    Example http://www.lucascorrea.com/PageId.png
                 [SCFacebook feedPostForPage:@"633641776679599" message:@"This is message with photo" photo:image callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
                 
             }
@@ -390,7 +413,7 @@
                 //    Example http://www.lucascorrea.com/PageId.png
                 [SCFacebook feedPostForPage:@"633641776679599" message:@"This is message" link:@"http://www.lucascorrea.com" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
                 
             }
@@ -406,7 +429,7 @@
                 //    Example http://www.lucascorrea.com/PageId.png
                 [SCFacebook feedPostForPage:@"633641776679599" video:videoData title:@"This is title" description:@"This is description" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -419,7 +442,7 @@
                 //    Example http://www.lucascorrea.com/PageId.png
                 [SCFacebook feedPostAdminForPageName:@"Empresa Teste" message:@"This is message" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -432,7 +455,7 @@
                 //    Example http://www.lucascorrea.com/PageId.png
                 [SCFacebook feedPostAdminForPageName:@"Empresa Teste" message:@"This is message" link:@"http://www.lucascorrea.com" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
                 
             }
@@ -447,7 +470,7 @@
                 //    Example http://www.lucascorrea.com/PageId.png
                 [SCFacebook feedPostAdminForPageName:@"Empresa Teste" message:@"This is message" photo:image callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -462,7 +485,7 @@
                 //    Example http://www.lucascorrea.com/PageId.png
                 [SCFacebook feedPostAdminForPageName:@"Empresa Teste" video:videoData title:@"This is title" description:@"This is description" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
                 
             }
@@ -483,7 +506,7 @@
                 loadingView.hidden = NO;
                 [SCFacebook getAlbumsCallBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -493,7 +516,7 @@
                 loadingView.hidden = NO;
                 [SCFacebook getAlbumById:@"103540609708919" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -503,7 +526,7 @@
                 loadingView.hidden = NO;
                 [SCFacebook getPhotosAlbumById:@"103540609708919" callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -513,7 +536,7 @@
                 loadingView.hidden = NO;
                 [SCFacebook createAlbumName:@"Album test" message:@"This is message" privacy: FBAlbumPrivacySelf callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;
@@ -525,7 +548,7 @@
                 UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"]]];
                 [SCFacebook feedPostForAlbumId:@"103540609708919" photo:image callBack:^(BOOL success, id result) {
                     loadingView.hidden = YES;
-                    Alert(@"Alert", [result description]);
+                    [self showMessage:[result description]];
                 }];
             }
                 break;

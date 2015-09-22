@@ -2,7 +2,7 @@
 # platform :ios, "6.0"
 
 target "SCFacebook" do
-  pod 'Facebook-iOS-SDK', '~>3.17.0'
-  pod 'SDWebImage', '~>3.6'
+  pod 'Facebook-iOS-SDK'
+  pod 'SDWebImage'
 end
 

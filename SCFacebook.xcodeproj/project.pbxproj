@@ -26,10 +26,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		107FE667DC3F43A08730C373 /* Pods-SCFacebook.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SCFacebook.xcconfig"; path = "Pods/Pods-SCFacebook.xcconfig"; sourceTree = "<group>"; };
 		4DF43AC6147EBFB500A7D104 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		4F1AC3C1187EE849E37484C8 /* Pods-SCFacebook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SCFacebook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SCFacebook/Pods-SCFacebook.debug.xcconfig"; sourceTree = "<group>"; };
 		A0C801DD19C3BAE50045D60E /* SCFacebook.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = SCFacebook.mov; sourceTree = "<group>"; };
 		B5F027DAB94B4688854BBCB2 /* libPods-SCFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SCFacebook.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4394F28F6603E2943D65518 /* Pods-SCFacebook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SCFacebook.release.xcconfig"; path = "Pods/Target Support Files/Pods-SCFacebook/Pods-SCFacebook.release.xcconfig"; sourceTree = "<group>"; };
 		F91989CF15143C9700A39D1E /* HomeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HomeController.h; path = Classes/HomeController.h; sourceTree = "<group>"; };
 		F91989D015143C9700A39D1E /* HomeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HomeController.m; path = Classes/HomeController.m; sourceTree = "<group>"; };
 		F91989D215143CAC00A39D1E /* FriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendCell.h; path = Classes/FriendCell.h; sourceTree = "<group>"; };
@@ -87,6 +88,15 @@
 			path = videos;
 			sourceTree = "<group>";
 		};
+		C66BD1D9C48F898E0D076F84 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4F1AC3C1187EE849E37484C8 /* Pods-SCFacebook.debug.xcconfig */,
+				E4394F28F6603E2943D65518 /* Pods-SCFacebook.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		F94518521831532D0083D862 /* HomeCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -124,7 +134,7 @@
 				F95F26E3147DCE8600715CC8 /* SCFacebook */,
 				F95F26DC147DCE8500715CC8 /* Frameworks */,
 				F95F26DA147DCE8500715CC8 /* Products */,
-				107FE667DC3F43A08730C373 /* Pods-SCFacebook.xcconfig */,
+				C66BD1D9C48F898E0D076F84 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -218,7 +228,7 @@
 		F95F26D0147DCE8500715CC8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "SiriusCode Solutions";
 			};
 			buildConfigurationList = F95F26D3147DCE8500715CC8 /* Build configuration list for PBXProject "SCFacebook" */;
@@ -280,7 +290,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-SCFacebook-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SCFacebook/Pods-SCFacebook-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -336,8 +346,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -373,6 +385,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -390,15 +403,15 @@
 		};
 		F95F26F8147DCE8600715CC8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 107FE667DC3F43A08730C373 /* Pods-SCFacebook.xcconfig */;
+			baseConfigurationReference = 4F1AC3C1187EE849E37484C8 /* Pods-SCFacebook.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SCFacebook/SCFacebook-Prefix.pch";
 				INFOPLIST_FILE = "SCFacebook/SCFacebook-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.siriuscode.teste;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
@@ -407,15 +420,15 @@
 		};
 		F95F26F9147DCE8600715CC8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 107FE667DC3F43A08730C373 /* Pods-SCFacebook.xcconfig */;
+			baseConfigurationReference = E4394F28F6603E2943D65518 /* Pods-SCFacebook.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SCFacebook/SCFacebook-Prefix.pch";
 				INFOPLIST_FILE = "SCFacebook/SCFacebook-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.siriuscode.teste;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
