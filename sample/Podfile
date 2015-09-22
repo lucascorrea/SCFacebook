@@ -1,8 +1,12 @@
 # Uncomment this line to define a global platform for your project
 # platform :ios, "6.0"
 
+use_frameworks!
+
 target "SCFacebook" do
-  pod 'SDWebImage'
-  pod 'SCFacebook', :git => 'https://github.com/lucascorrea/SCFacebook.git', :branch => 'facebook4.0'
+  	pod 'SDWebImage'
+  	pod 'FBSDKCoreKit'
+	pod 'FBSDKShareKit'
+	pod 'FBSDKLoginKit'
 end
 

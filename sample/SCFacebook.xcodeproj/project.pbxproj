@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3CC35B4490D240AB97B379D9 /* libPods-SCFacebook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F027DAB94B4688854BBCB2 /* libPods-SCFacebook.a */; };
+		187FE8366B4C78AC9A486EAB /* Pods_SCFacebook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 036D6D5B0E1F7EEE26AC4D46 /* Pods_SCFacebook.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		4DF43AC7147EBFB500A7D104 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF43AC6147EBFB500A7D104 /* QuartzCore.framework */; };
+		A006C4771BB1B44500F8F728 /* SCFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = A006C4751BB1B44500F8F728 /* SCFacebook.m */; settings = {ASSET_TAGS = (); }; };
 		A006F5841BB198290024416F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A006F5821BB198290024416F /* AppDelegate.m */; settings = {ASSET_TAGS = (); }; };
 		A0C801E219C3BAE50045D60E /* SCFacebook.mov in Resources */ = {isa = PBXBuildFile; fileRef = A0C801DD19C3BAE50045D60E /* SCFacebook.mov */; };
 		F91989D115143C9700A39D1E /* HomeController.m in Sources */ = {isa = PBXBuildFile; fileRef = F91989D015143C9700A39D1E /* HomeController.m */; };
@@ -25,12 +26,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		036D6D5B0E1F7EEE26AC4D46 /* Pods_SCFacebook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SCFacebook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DF43AC6147EBFB500A7D104 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4F1AC3C1187EE849E37484C8 /* Pods-SCFacebook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SCFacebook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SCFacebook/Pods-SCFacebook.debug.xcconfig"; sourceTree = "<group>"; };
+		A006C4751BB1B44500F8F728 /* SCFacebook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCFacebook.m; path = ../../SCFacebook/SCFacebook.m; sourceTree = "<group>"; };
+		A006C4761BB1B44500F8F728 /* SCFacebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCFacebook.h; path = ../../SCFacebook/SCFacebook.h; sourceTree = "<group>"; };
 		A006F5821BB198290024416F /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
 		A006F5831BB198290024416F /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
 		A0C801DD19C3BAE50045D60E /* SCFacebook.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = SCFacebook.mov; sourceTree = "<group>"; };
-		B5F027DAB94B4688854BBCB2 /* libPods-SCFacebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SCFacebook.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4394F28F6603E2943D65518 /* Pods-SCFacebook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SCFacebook.release.xcconfig"; path = "Pods/Target Support Files/Pods-SCFacebook/Pods-SCFacebook.release.xcconfig"; sourceTree = "<group>"; };
 		F91989CF15143C9700A39D1E /* HomeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HomeController.h; path = Classes/HomeController.h; sourceTree = "<group>"; };
 		F91989D015143C9700A39D1E /* HomeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HomeController.m; path = Classes/HomeController.m; sourceTree = "<group>"; };
@@ -61,7 +64,7 @@
 				F95F26DE147DCE8600715CC8 /* UIKit.framework in Frameworks */,
 				F95F26E0147DCE8600715CC8 /* Foundation.framework in Frameworks */,
 				F95F26E2147DCE8600715CC8 /* CoreGraphics.framework in Frameworks */,
-				3CC35B4490D240AB97B379D9 /* libPods-SCFacebook.a in Frameworks */,
+				187FE8366B4C78AC9A486EAB /* Pods_SCFacebook.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,7 +153,7 @@
 				F95F26DD147DCE8500715CC8 /* UIKit.framework */,
 				F95F26DF147DCE8600715CC8 /* Foundation.framework */,
 				F95F26E1147DCE8600715CC8 /* CoreGraphics.framework */,
-				B5F027DAB94B4688854BBCB2 /* libPods-SCFacebook.a */,
+				036D6D5B0E1F7EEE26AC4D46 /* Pods_SCFacebook.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -158,6 +161,8 @@
 		F95F26E3147DCE8600715CC8 /* SCFacebook */ = {
 			isa = PBXGroup;
 			children = (
+				A006C4761BB1B44500F8F728 /* SCFacebook.h */,
+				A006C4751BB1B44500F8F728 /* SCFacebook.m */,
 				F9564FEA1480561E000A9AA0 /* Classes */,
 				A0C801D619C3BAE50045D60E /* Resources */,
 				F95F26E4147DCE8600715CC8 /* Supporting Files */,
@@ -207,6 +212,7 @@
 				F95F26D6147DCE8500715CC8 /* Frameworks */,
 				F95F26D7147DCE8500715CC8 /* Resources */,
 				EECBD00C62484227BB0167C0 /* Copy Pods Resources */,
+				B48B8E63D08151C3EACE3DCF /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -273,6 +279,21 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		B48B8E63D08151C3EACE3DCF /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SCFacebook/Pods-SCFacebook-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		EECBD00C62484227BB0167C0 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -295,6 +316,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A006C4771BB1B44500F8F728 /* SCFacebook.m in Sources */,
 				F95F26EA147DCE8600715CC8 /* main.m in Sources */,
 				F9451851183153290083D862 /* HomeCell.m in Sources */,
 				A006F5841BB198290024416F /* AppDelegate.m in Sources */,

@@ -64,6 +64,7 @@
     }
     
     [self.loginManager logInWithReadPermissions: self.readPermissions
+                             fromViewController: nil
                                         handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
                                             if (error) {
                                                 callBack(NO, error.localizedDescription);
@@ -115,7 +116,7 @@
     } else {
         
         self.loginManager.loginBehavior = FBSDKLoginBehaviorSystemAccount;
-        [self.loginManager logInWithPublishPermissions:self.publishPermissions handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        [self.loginManager logInWithPublishPermissions:self.publishPermissions fromViewController:nil handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
             if (error) {
                 callBack(NO, error.localizedDescription);
             } else if (result.isCancelled) {
@@ -197,10 +198,10 @@
     
     if (preview) {
         //optionally set previewImageURL
-        content.previewImageURL = preview;
+        content.appInvitePreviewImageURL = preview;
     }
     
-    [FBSDKAppInviteDialog showWithContent:content
+    [FBSDKAppInviteDialog showFromViewController:nil withContent:content
                                  delegate:self];
     
     self.inviteCallcack = callBack;
@@ -218,7 +219,7 @@
     } else {
         
         self.loginManager.loginBehavior = FBSDKLoginBehaviorSystemAccount;
-        [self.loginManager logInWithPublishPermissions:self.publishPermissions handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        [self.loginManager logInWithPublishPermissions:self.publishPermissions fromViewController:nil handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
             if (error) {
                 callBack(NO, error.localizedDescription);
             } else if (result.isCancelled) {
@@ -312,6 +313,12 @@
 
 - (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
 {
+    
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
     [SCFacebook getPagesCallBack:^(BOOL success, id result) {
         
         if (success) {
@@ -349,6 +356,12 @@
 
 - (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
 {
+    
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
     [SCFacebook getPagesCallBack:^(BOOL success, id result) {
         
         if (success) {
@@ -392,6 +405,11 @@
 
 - (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
 {
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
     [SCFacebook getPagesCallBack:^(BOOL success, id result) {
         
         if (success) {
@@ -433,6 +451,12 @@
 
 - (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
 {
+    
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
     [SCFacebook getPagesCallBack:^(BOOL success, id result) {
         
         if (success) {
@@ -499,7 +523,6 @@
 
 - (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
 {
-    
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -602,10 +625,8 @@
                                        HTTPMethod:httpMethod]
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
          if ([error.userInfo[FBSDKGraphRequestErrorGraphErrorCode] isEqual:@200]) {
-             NSLog(@"%@", error);
              callBack(NO, error);
          } else {
-             NSLog(@"%@", result);
              callBack(YES, result);
          }
      }];
