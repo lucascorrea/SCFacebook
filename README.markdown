@@ -17,7 +17,7 @@ Getting Started
 
 Using [CocoaPods](http://cocoapods.org) to get start, you can add following line to your Podfile:
 
-	  pod 'SCFacebook'
+	pod 'SCFacebook'
 
 Once you have set up the `URL Scheme` and `FacebookAppID` as image below:
 
@@ -60,16 +60,16 @@ Now in it's `AppDelegate` need to add one method and add permissions
   }
  
 
-	      #pragma mark - 
-	      #pragma mark - SCFacebook Handle
+	#pragma mark - 
+	#pragma mark - SCFacebook Handle
 	      
-	      - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-	      {
+	- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+	{
 	          return [[FBSDKApplicationDelegate sharedInstance] application:application
 	                                                              openURL:url
 	                                                    sourceApplication:sourceApplication
 	                                                           annotation:annotation];
-	      }
+	}
 	  
 Example Usage
 =============
@@ -135,7 +135,7 @@ Methods
   https://developers.facebook.com/docs/ios/graph
    @param callBack (BOOL success, id result)
    
-	   + (void)loginWithBehavior:(FBSDKLoginBehavior)behavior CallBack:(SCFacebookCallback)callBack;
+    + (void)loginWithBehavior:(FBSDKLoginBehavior)behavior CallBack:(SCFacebookCallback)callBack;
 
   Facebook logout
   https://developers.facebook.com/docs/ios/graph
@@ -150,7 +150,7 @@ Methods
    @param fields   fields example: id, name, email, birthday, about, picture
   @param callBack (BOOL success, id result)
  
-	+ (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
+     + (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
 
 
   This will only return any friends who have used (via Facebook Login) the app making the request.
