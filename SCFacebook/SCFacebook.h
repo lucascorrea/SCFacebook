@@ -3,7 +3,7 @@
 //  SCFacebook
 //
 //  Created by Lucas Correa on 23/11/11.
-//  Copyright (c) 2014 Siriuscode Solutions. All rights reserved.
+//  Copyright (c) 2011-present Siriuscode Solutions. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -425,9 +425,10 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *
  *  Permissions required: publish_actions
  *
- *  @param path            NSString
- *  @param openGraphObject NSString
- *  @param objectName      NSString
+ *  @param actionType       NSString
+ *  @param graphObject      NSString
+ *  @param objectName       NSString
+ *  @param viewController   UIViewController
  *  @param callBack        (BOOL success, id result)
  */
 + (void)sendForPostOpenGraphWithActionType:(NSString *)actionType graphObject:(FBSDKShareOpenGraphObject *)openGraphObject objectName:(NSString *)objectName viewController:(UIViewController *)viewController callBack:(SCFacebookCallback)callBack;
