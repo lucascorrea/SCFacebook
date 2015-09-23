@@ -7,6 +7,10 @@ Facebook SDK 4.6 for iOS
 	FBSDKShareKit
 	FBSDKLoginKit
 
+
+Demo
+=================
+
 ![SCFacebook Demo](http://www.lucascorrea.com/Git/SCFacebookDemo.gif)
 
 Installation
