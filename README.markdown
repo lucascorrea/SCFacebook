@@ -3,6 +3,10 @@ The SCFacebook 4.0 is a simple and cleaner to use the api [Facebook-ios-sdk] (ht
 
 Facebook SDK 4.6 for iOS
 
+	FBSDKCoreKit 
+	FBSDKShareKit
+	FBSDKLoginKit
+
 ![SCFacebook Demo](http://www.lucascorrea.com/Git/SCFacebookDemo.gif)
 
 Installation
