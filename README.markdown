@@ -33,7 +33,7 @@ Once you have set up the `URL Scheme` and `FacebookAppID` as image below:
 
 IOS 9 is required this add fields like the image below:
 
-![]( http://siriuscode.com/SCFacebookSettings.png)
+![]( http://www.lucascorrea.com/Git/SCFacebookSettings.png)
 
 
 
