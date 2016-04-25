@@ -381,6 +381,20 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  */
 + (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
 
+
+/**
+ *  Get photos the album with id
+ *
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.4/album/photos
+ *
+ *  Permissions required: user_photos
+ *
+ *  @param albumId  NSString
+ *  @param params   NSDictionary ex: @{@"fields": @"name, images"}
+ *  @param callBack (BOOL success, id result)
+ */
++ (void)getPhotosAlbumById:(NSString *)albumId withParams:(NSDictionary*)params callBack:(SCFacebookCallback)callBack;
+
 /**
  *  Create album the user
  *

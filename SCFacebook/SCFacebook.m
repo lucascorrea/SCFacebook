@@ -536,6 +536,23 @@
     [SCFacebook graphFacebookForMethodGET:[NSString stringWithFormat:@"%@/photos", albumId] params:nil callBack:callBack];
 }
 
+- (void)getPhotosAlbumById:(NSString *)albumId withParams:(NSDictionary*)params callBack:(SCFacebookCallback)callBack
+{
+    if (![self isSessionValid]) {
+        callBack(NO, @"Not logged in");
+        return;
+    }
+    
+    if (!albumId) {
+        callBack(NO, @"Album id required");
+        return;
+    }
+    
+    [SCFacebook graphFacebookForMethodGET:[NSString stringWithFormat:@"%@/photos", albumId] params:params callBack:callBack];
+}
+
+
+
 - (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack
 {
     if (![self isSessionValid]) {
@@ -833,6 +850,12 @@
 {
     [[SCFacebook shared] getPhotosAlbumById:albumId callBack:callBack];
 }
+
++ (void)getPhotosAlbumById:(NSString *)albumId  withParams:(NSDictionary*)params  callBack:(SCFacebookCallback)callBack
+{
+    [[SCFacebook shared] getPhotosAlbumById:albumId withParams:params callBack:callBack];
+}
+
 
 + (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack
 {
