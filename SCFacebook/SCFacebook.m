@@ -104,7 +104,7 @@
 }
 
 
-- (void)getUserFriendsCallBack:(SCFacebookCallback)callBack
+- (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack
 {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -116,13 +116,13 @@
     } else {
         
         self.loginManager.loginBehavior = FBSDKLoginBehaviorSystemAccount;
-        [self.loginManager logInWithPublishPermissions:self.publishPermissions fromViewController:nil handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        [self.loginManager logInWithPublishPermissions:self.readPermissions fromViewController:nil handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
             if (error) {
                 callBack(NO, error.localizedDescription);
             } else if (result.isCancelled) {
                 callBack(NO, @"Cancelled");
             } else {
-                [self graphFacebookForMethodGET:@"me/friends" params:nil callBack:callBack];
+                [self graphFacebookForMethodGET:@"me/friends" params:@{@"fields" : fields} callBack:callBack];
             }
         }];
     }
@@ -730,9 +730,9 @@
     [[SCFacebook shared] getUserFields:fields callBack:callBack];
 }
 
-+ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack
++ (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack
 {
-    [[SCFacebook shared] getUserFriendsCallBack:callBack];
+    [[SCFacebook shared] getUserFriendsFields:fields callBack:callBack];
 }
 
 + (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption callBack:(SCFacebookCallback)callBack
@@ -766,7 +766,7 @@
 
 + (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack
 {
-    [[SCFacebook shared] inviteFriendsWithAppLinkURL:url previewImageURL:url callBack:callBack];
+    [[SCFacebook shared] inviteFriendsWithAppLinkURL:url previewImageURL:preview callBack:callBack];
 }
 
 + (void)getPagesCallBack:(SCFacebookCallback)callBack
