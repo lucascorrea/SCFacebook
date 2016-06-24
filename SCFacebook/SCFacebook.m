@@ -116,7 +116,7 @@
     } else {
         
         self.loginManager.loginBehavior = FBSDKLoginBehaviorSystemAccount;
-        [self.loginManager logInWithPublishPermissions:self.publishPermissions fromViewController:nil handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        [self.loginManager logInWithPublishPermissions:self.readPermissions fromViewController:nil handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
             if (error) {
                 callBack(NO, error.localizedDescription);
             } else if (result.isCancelled) {
