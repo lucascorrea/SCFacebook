@@ -766,7 +766,7 @@
 
 + (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack
 {
-    [[SCFacebook shared] inviteFriendsWithAppLinkURL:url previewImageURL:url callBack:callBack];
+    [[SCFacebook shared] inviteFriendsWithAppLinkURL:url previewImageURL:preview callBack:callBack];
 }
 
 + (void)getPagesCallBack:(SCFacebookCallback)callBack
