@@ -104,7 +104,7 @@
 }
 
 
-- (void)getUserFriendsCallBack:(SCFacebookCallback)callBack
+- (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack
 {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -122,7 +122,7 @@
             } else if (result.isCancelled) {
                 callBack(NO, @"Cancelled");
             } else {
-                [self graphFacebookForMethodGET:@"me/friends" params:nil callBack:callBack];
+                [self graphFacebookForMethodGET:@"me/friends" params:@{@"fields" : fields} callBack:callBack];
             }
         }];
     }
@@ -730,9 +730,9 @@
     [[SCFacebook shared] getUserFields:fields callBack:callBack];
 }
 
-+ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack
++ (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack
 {
-    [[SCFacebook shared] getUserFriendsCallBack:callBack];
+    [[SCFacebook shared] getUserFriendsFields:fields callBack:callBack];
 }
 
 + (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption callBack:(SCFacebookCallback)callBack
