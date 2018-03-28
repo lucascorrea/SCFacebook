@@ -96,7 +96,7 @@
 }
 
 
-- (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack {
+- (void)getUserFriendsWithFields:(NSString *)fields callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -500,7 +500,7 @@
     [SCFacebook graphFacebookForMethodGET:albumId params:nil callBack:callBack];
 }
 
-- (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack {
+- (void)getPhotosAlbumById:(NSString *)albumId withParams:(NSDictionary*)params callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -511,7 +511,7 @@
         return;
     }
     
-    [SCFacebook graphFacebookForMethodGET:[NSString stringWithFormat:@"%@/photos", albumId] params:nil callBack:callBack];
+    [SCFacebook graphFacebookForMethodGET:[NSString stringWithFormat:@"%@/photos", albumId] params:params callBack:callBack];
 }
 
 - (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack {
@@ -690,8 +690,8 @@
     [[SCFacebook shared] getUserFields:fields callBack:callBack];
 }
 
-+ (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack {
-    [[SCFacebook shared] getUserFriendsFields:fields callBack:callBack];
++ (void)getUserFriendsWithFields:(NSString *)fields callBack:(SCFacebookCallback)callBack {
+    [[SCFacebook shared] getUserFriendsWithFields:fields callBack:callBack];
 }
 
 + (void)getUserFriendsCallBack:(SCFacebookCallback)callBack {
@@ -723,7 +723,7 @@
 }
 
 + (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack {
-    [[SCFacebook shared] inviteFriendsWithAppLinkURL:url previewImageURL:url callBack:callBack];
+    [[SCFacebook shared] inviteFriendsWithAppLinkURL:url previewImageURL:preview callBack:callBack];
 }
 
 + (void)getPagesCallBack:(SCFacebookCallback)callBack {
@@ -775,7 +775,11 @@
 }
 
 + (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack {
-    [[SCFacebook shared] getPhotosAlbumById:albumId callBack:callBack];
+    
+}
+
++ (void)getPhotosAlbumById:(NSString *)albumId withParams:(NSDictionary*)params callBack:(SCFacebookCallback)callBack {
+    [[SCFacebook shared] getPhotosAlbumById:albumId withParams:params callBack:callBack];
 }
 
 + (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack {

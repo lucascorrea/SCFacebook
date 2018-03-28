@@ -128,6 +128,8 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  This will only return any friends who have used (via Facebook Login) the app making the request.
  *  If a friend of the person declines the user_friends permission, that friend will not show up in the friend list for this person.
+    1 - get the User's friends who have installed the app making the query
+    2 - get the User's total number of friends (including those who have not installed the app making the query)
  *
  *  https://developers.facebook.com/docs/graph-api/reference/v2.12/user/friends/
  *
@@ -136,7 +138,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *  @param fields   fields example: id, name, email, birthday, about, picture
  *  @param callBack (BOOL success, id result)
  */
-+ (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
++ (void)getUserFriendsWithFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
 
 /**
  *  This will only return any friends who have used (via Facebook Login) the app making the request.
@@ -148,7 +150,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *
  *  @param callBack (BOOL success, id result)
  */
-+ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack __attribute__ ((deprecated("getUserFriendsCallBack has been replaced with getUserFriendsFields:callBack")));
++ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack __attribute__ ((deprecated("getUserFriendsCallBack has been replaced with getUserFriendsWithFields:callBack")));
 
 /**
  *  Post in the user profile with link and caption
@@ -394,9 +396,22 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *  Permissions required: user_photos
  *
  *  @param albumId  NSString
+ *  @param params   NSDictionary ex: @{@"fields": @"name, images"}
  *  @param callBack (BOOL success, id result)
  */
-+ (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack;
++ (void)getPhotosAlbumById:(NSString *)albumId withParams:(NSDictionary*)params callBack:(SCFacebookCallback)callBack;
+
+/**
+ *  Get photos the album with id
+ *
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/album/photos
+ *
+ *  Permissions required: user_photos
+ *
+ *  @param albumId  NSString
+ *  @param callBack (BOOL success, id result)
+ */
++ (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack __attribute__ ((deprecated("getPhotosAlbumById:callBack has been replaced with getPhotosAlbumById:withParams:callBack")));
 
 /**
  *  Create album the user
