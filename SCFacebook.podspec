@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
 
   s.name         = "SCFacebook"
-  s.version      = "4.0"
+  s.version      = "4.1"
   s.summary      = "The SCFacebook is a simpler and cleaner to use the api facebook-ios-sdk Objective-C "
 
   s.description  = <<-DESC
@@ -22,11 +22,11 @@ Pod::Spec.new do |s|
    s.license      = { :type => "MIT", :text => "SCFacebook is licensed under the MIT License" }
 
   s.author             = { "Lucas Correa" => "contato@lucascorrea.com" }
-   s.platform     = :ios, "7.0"
+   s.platform     = :ios, "9.0"
 
-  s.ios.deployment_target = "7.0"
+  s.ios.deployment_target = "9.0"
 
-  s.source       = { :git => "https://github.com/lucascorrea/SCFacebook.git", :tag => "4.0" }
+  s.source       = { :git => "https://github.com/lucascorrea/SCFacebook.git", :tag => "4.1" }
 
   s.source_files  = "SCFacebook/**/*SCFacebook.{h,m}"
 
