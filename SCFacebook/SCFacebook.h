@@ -75,7 +75,8 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *
  *  https://developers.facebook.com/docs/facebook-login/permissions/v2.12
  *
- *  @param permissions
+ *  @param readPermissions     The permissons to use the Facebook SDK
+ *  @param publishPermissions  The permissons to use the Facebook SDK
  */
 + (void)initWithReadPermissions:(NSArray *)readPermissions publishPermissions:(NSArray *)publishPermissions;
 
@@ -100,7 +101,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *  Facebook login
  *
  * https://developers.facebook.com/docs/ios/graph
- *  @param FBSDKLoginBehavior behavior
+ *  @param behavior FBSDKLoginBehavior
  *  @param callBack (BOOL success, id result)
  */
 + (void)loginWithBehavior:(FBSDKLoginBehavior)behavior CallBack:(SCFacebookCallback)callBack;
@@ -220,7 +221,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *
  * https://developers.facebook.com/docs/graph-api/reference/v2.12/user/
  *
- *  @param appLink URL
+ *  @param url URL
  *  @param preview URL optional
  *  @param callBack (BOOL success, id result)
  */
@@ -458,7 +459,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *  Permissions required: publish_actions
  *
  *  @param actionType       NSString
- *  @param graphObject      NSString
+ *  @param openGraphObject  NSString
  *  @param objectName       NSString
  *  @param viewController   UIViewController
  *  @param callBack        (BOOL success, id result)
