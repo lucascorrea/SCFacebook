@@ -15,7 +15,17 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    //Init SCFacebook
+    
+    /**
+     Init SCFacebook
+     Add the necessary permissions
+     
+     If your app asks for more than than public_profile and email, it will require review by Facebook before your app can be used by people other than the app's developers.
+     
+     The time to review your app is usually about 7 business days. Some extra-sensitive permissions, as noted below, can take up to 14 business days.
+     
+     https://developers.facebook.com/docs/facebook-login/permissions/review
+     **/
     [SCFacebook initWithReadPermissions:@[
                                           @"user_about_me",
                                           @"user_birthday",
