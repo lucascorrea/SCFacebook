@@ -50,8 +50,13 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *
  *  FacebookSDK version
  *
- *  Version 1.0, which is what we call the API as it existed the day before v2.0 was launched. We'll support v1.0 for one year and it will expire on April 30th, 2015.
- *  Version 2.0, which is what this upgrade guide covers. Version 2.0 is supported for at least two years. At the earliest, it will expire on April 30th, 2016.
+ *  Version Schedules
+ 
+ * Each version is guaranteed to operate for at least two years. A version will no longer be usable two years after the date that the subsequent version is released.
+ 
+ * So if API version v2.3 is released on March 25th, 2015 and API version v2.4 is released August 7th, 2015 then v2.3 would expire on August 7th, 2017, two years after the release of v2.4.
+ 
+ *  https://developers.facebook.com/docs/apps/versions
  *
  */
 @property (strong, nonatomic) FBSDKLoginManager *session;
@@ -68,7 +73,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *  email - Access to a person's primary email address.
  *  user_likes - Access to the list of things a person likes.
  *
- *  https://developers.facebook.com/docs/facebook-login/permissions/v2.4
+ *  https://developers.facebook.com/docs/facebook-login/permissions/v2.12
  *
  *  @param permissions
  */
@@ -112,11 +117,10 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Get the data from the logged in user by passing the fields.
  *
- *  https://developers.facebook.com/docs/facebook-login/permissions/v2.4#reference-public_profile
+ *  https://developers.facebook.com/docs/facebook-login/permissions/v2.12#reference-public_profile
  *
  *  Permissions required: public_profile...
  *
- *  @param fields   fields example: id, name, email, birthday, about, picture
  *  @param callBack (BOOL success, id result)
  */
 + (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
@@ -125,18 +129,31 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *  This will only return any friends who have used (via Facebook Login) the app making the request.
  *  If a friend of the person declines the user_friends permission, that friend will not show up in the friend list for this person.
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/user/friends/
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/user/friends/
+ *
+ *  Permissions required: user_friends
+ *
+ *  @param fields   fields example: id, name, email, birthday, about, picture
+ *  @param callBack (BOOL success, id result)
+ */
++ (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack;
+
+/**
+ *  This will only return any friends who have used (via Facebook Login) the app making the request.
+ *  If a friend of the person declines the user_friends permission, that friend will not show up in the friend list for this person.
+ *
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/user/friends/
  *
  *  Permissions required: user_friends
  *
  *  @param callBack (BOOL success, id result)
  */
-+ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack;
++ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack __attribute__ ((deprecated("getUserFriendsCallBack has been replaced with getUserFriendsFields:callBack")));
 
 /**
  *  Post in the user profile with link and caption
  *
- * https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
+ * https://developers.facebook.com/docs/graph-api/reference/v2.12/user/feed
  *
  *  Permissions required: publish_actions
  *
@@ -149,7 +166,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post in the user profile with message
  * 
- * https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
+ * https://developers.facebook.com/docs/graph-api/reference/v2.12/user/feed
  *
  *  Permissions required: publish_actions
  *
@@ -161,7 +178,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post in the user profile with photo and caption
  *
- * https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
+ * https://developers.facebook.com/docs/graph-api/reference/v2.12/user/feed
  *
  *  Permissions required: publish_actions
  *
@@ -174,7 +191,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post in the user profile with video, title and description
  *
- * https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
+ * https://developers.facebook.com/docs/graph-api/reference/v2.12/user/feed
  *
  *  Permissions required: publish_actions
  *
@@ -188,7 +205,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  The feed of posts (including status updates) and links published by this person, or by others on this person's profile.
  *
- * https://developers.facebook.com/docs/graph-api/reference/v2.4/user/feed
+ * https://developers.facebook.com/docs/graph-api/reference/v2.12/user/feed
  *
  *  Permissions required: read_stream
  *
@@ -199,18 +216,18 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Invite friends with message via dialog
  *
- * https://developers.facebook.com/docs/graph-api/reference/v2.4/user/
+ * https://developers.facebook.com/docs/graph-api/reference/v2.12/user/
  *
  *  @param appLink URL
  *  @param preview URL optional
  *  @param callBack (BOOL success, id result)
  */
-+ (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack;
++ (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack __attribute__ ((deprecated("App Invites no longer supported")));
 
 /**
  *  Get pages in user
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *  Permissions required: manage_pages
  *
@@ -225,7 +242,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *  Facebook Web address ou pageId
  *  Example http://www.lucascorrea.com/PageId.png
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *  Permissions required: manage_pages
  *
@@ -237,7 +254,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post in the page profile with message
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *  Permissions required: publish_actions
  *
@@ -250,7 +267,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post in the page profile with message and photo
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *  Permissions required: publish_actions
  *
@@ -264,7 +281,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post in the page profile with message and link
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *  Permissions required: publish_actions
  *
@@ -278,7 +295,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post in the page profile with video, title and description
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *  Permissions required: publish_actions
  *
@@ -293,7 +310,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post on page with administrator profile with a message
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *  Permissions required: publish_actions
  *
@@ -306,7 +323,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post on page with administrator profile with a message and link
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *  Permissions required: publish_actions
  *
@@ -321,7 +338,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
  *  Post on page with administrator profile with a message and photo
  *
  *  Permissions required: publish_actions
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *
  *  @param page     NSString
@@ -334,7 +351,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post on page with administrator profile with a video, title and description
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/page
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/page
  *
  *  Permissions required: publish_actions
  *
@@ -349,7 +366,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Get albums in user
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/user/albums
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/user/albums
  *
  *  Permissions required: user_photos
  *
@@ -360,7 +377,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Get album with id
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/user/albums
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/user/albums
  *
  *  Permissions required: user_photos
  *
@@ -372,7 +389,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Get photos the album with id
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/album/photos
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/album/photos
  *
  *  Permissions required: user_photos
  *
@@ -384,7 +401,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Create album the user
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/user/albums
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/user/albums
  *
  *  Permissions required: publish_actions and user_photos
  *
@@ -398,7 +415,7 @@ typedef NS_ENUM(NSInteger, FBAlbumPrivacyType) {
 /**
  *  Post the photo album in your user profile
  *
- *  https://developers.facebook.com/docs/graph-api/reference/v2.4/album/photos
+ *  https://developers.facebook.com/docs/graph-api/reference/v2.12/album/photos
  *
  *  Permissions required: publish_actions
  *

@@ -14,10 +14,10 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //Init SCFacebook
-    [SCFacebook initWithReadPermissions:@[@"user_about_me",
+    [SCFacebook initWithReadPermissions:@[
+                                          @"user_about_me",
                                           @"user_birthday",
                                           @"email",
                                           @"user_photos",
@@ -25,9 +25,11 @@
                                           @"user_friends",
                                           @"user_videos",
                                           @"public_profile"]
-                     publishPermissions:@[@"manage_pages",
+                     publishPermissions:@[
+                                          @"manage_pages",
                                           @"publish_actions",
-                                          @"publish_pages"]
+                                          @"publish_pages"
+                                          ]
      ];
     
     [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
@@ -42,8 +44,7 @@
 #pragma mark -
 #pragma mark - SCFacebook Handle
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                                           openURL:url
                                                 sourceApplication:sourceApplication

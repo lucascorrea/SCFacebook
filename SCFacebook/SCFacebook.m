@@ -1,4 +1,4 @@
-//
+    //
 //  SCFacebook.m
 //  SCFacebook
 //
@@ -39,26 +39,20 @@
 #pragma mark -
 #pragma mark - Private Methods
 
-- (void)initWithReadPermissions:(NSArray *)readPermissions publishPermissions:(NSArray *)publishPermissions;
-{
+- (void)initWithReadPermissions:(NSArray *)readPermissions publishPermissions:(NSArray *)publishPermissions {
     self.readPermissions = readPermissions;
     self.publishPermissions = publishPermissions;
 }
 
-- (BOOL)isSessionValid
-{
+- (BOOL)isSessionValid {
     return [FBSDKAccessToken currentAccessToken] != nil;
 }
 
-
-
-- (void)loginCallBack:(SCFacebookCallback)callBack
-{
+- (void)loginCallBack:(SCFacebookCallback)callBack {
     [self loginWithBehavior:FBSDKLoginBehaviorSystemAccount CallBack:callBack];
 }
 
-- (void)loginWithBehavior:(FBSDKLoginBehavior)behavior CallBack:(SCFacebookCallback)callBack
-{
+- (void)loginWithBehavior:(FBSDKLoginBehavior)behavior CallBack:(SCFacebookCallback)callBack {
     if (behavior) {
         self.loginManager.loginBehavior = behavior;
     }
@@ -79,8 +73,7 @@
 }
 
 
-- (void)logoutCallBack:(SCFacebookCallback)callBack
-{
+- (void)logoutCallBack:(SCFacebookCallback)callBack {
     [self.loginManager logOut];
     
     NSHTTPCookieStorage* cookies = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -93,8 +86,7 @@
     callBack(YES, @"Logout successfully");
 }
 
-- (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack
-{
+- (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -104,15 +96,14 @@
 }
 
 
-- (void)getUserFriendsCallBack:(SCFacebookCallback)callBack
-{
+- (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
     }
     
     if ([[FBSDKAccessToken currentAccessToken] hasGranted:(@"user_friends")]) {
-        [self graphFacebookForMethodGET:@"me/friends" params:nil callBack:callBack];
+        [self graphFacebookForMethodGET:@"me/friends" params:@{@"fields" : fields} callBack:callBack];
     } else {
         
         self.loginManager.loginBehavior = FBSDKLoginBehaviorSystemAccount;
@@ -122,14 +113,13 @@
             } else if (result.isCancelled) {
                 callBack(NO, @"Cancelled");
             } else {
-                [self graphFacebookForMethodGET:@"me/friends" params:nil callBack:callBack];
+                [self graphFacebookForMethodGET:@"me/friends" params:@{@"fields" : fields} callBack:callBack];
             }
         }];
     }
 }
 
-- (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption message:(NSString *)message photo:(UIImage *)photo video:(NSData *)videoData callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption message:(NSString *)message photo:(UIImage *)photo video:(NSData *)videoData callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -176,8 +166,7 @@
     [self graphFacebookForMethodPOST:graphPath params:params callBack:callBack];
 }
 
-- (void)myFeedCallBack:(SCFacebookCallback)callBack
-{
+- (void)myFeedCallBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -186,8 +175,7 @@
     [self graphFacebookForMethodPOST:@"me/feed" params:nil callBack:callBack];
 }
 
-- (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack
-{
+- (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -201,14 +189,16 @@
         content.appInvitePreviewImageURL = preview;
     }
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+   
     [FBSDKAppInviteDialog showFromViewController:nil withContent:content
                                  delegate:self];
-    
+#pragma clang diagnostic pop
     self.inviteCallcack = callBack;
 }
 
-- (void)getPagesCallBack:(SCFacebookCallback)callBack
-{
+- (void)getPagesCallBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -232,8 +222,7 @@
     
 }
 
-- (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack
-{
+- (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -247,8 +236,7 @@
     [SCFacebook graphFacebookForMethodGET:pageId params:nil callBack:callBack];
 }
 
-- (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -262,8 +250,7 @@
     [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/feed", page] params:@{@"message": message} callBack:callBack];
 }
 
-- (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack {
     
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -278,8 +265,7 @@
     [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/photos", page] params:@{@"message": message, @"source" : UIImagePNGRepresentation(photo)} callBack:callBack];
 }
 
-- (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -293,8 +279,7 @@
     [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/feed", page] params:@{@"message": message, @"link" : url} callBack:callBack];
 }
 
-- (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -311,8 +296,7 @@
                                              @"video.mp4" : videoData} callBack:callBack];
 }
 
-- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack {
     
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -354,8 +338,7 @@
     }];
 }
 
-- (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack {
     
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -403,8 +386,7 @@
     }];
 }
 
-- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -449,8 +431,7 @@
     }];
 }
 
-- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack {
     
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
@@ -496,8 +477,7 @@
     }];
 }
 
-- (void)getAlbumsCallBack:(SCFacebookCallback)callBack
-{
+- (void)getAlbumsCallBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -506,8 +486,7 @@
     [self graphFacebookForMethodGET:@"me/albums" params:nil callBack:callBack];
 }
 
-- (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
-{
+- (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -521,8 +500,7 @@
     [SCFacebook graphFacebookForMethodGET:albumId params:nil callBack:callBack];
 }
 
-- (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
-{
+- (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -536,8 +514,7 @@
     [SCFacebook graphFacebookForMethodGET:[NSString stringWithFormat:@"%@/photos", albumId] params:nil callBack:callBack];
 }
 
-- (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack
-{
+- (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -572,8 +549,7 @@
                                                                  @"value" : privacyString} callBack:callBack];
 }
 
-- (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
-{
+- (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -587,8 +563,7 @@
     [SCFacebook graphFacebookForMethodPOST:[NSString stringWithFormat:@"%@/photos", albumId] params:@{@"source": UIImagePNGRepresentation(photo)} callBack:callBack];
 }
 
-- (void)sendForPostOpenGraphWithActionType:(NSString *)actionType graphObject:(FBSDKShareOpenGraphObject *)openGraphObject objectName:(NSString *)objectName viewController:(UIViewController *)viewController callBack:(SCFacebookCallback)callBack
-{
+- (void)sendForPostOpenGraphWithActionType:(NSString *)actionType graphObject:(FBSDKShareOpenGraphObject *)openGraphObject objectName:(NSString *)objectName viewController:(UIViewController *)viewController callBack:(SCFacebookCallback)callBack {
     if (![self isSessionValid]) {
         callBack(NO, @"Not logged in");
         return;
@@ -608,18 +583,15 @@
     self.sharedCallcack = callBack;
 }
 
-- (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack
-{
+- (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack {
     [self graphFacebookForMethod:method httpMethod:@"POST" params:params callBack:callBack];
 }
 
-- (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack
-{
+- (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack {
     [self graphFacebookForMethod:method httpMethod:@"GET" params:params callBack:callBack];
 }
 
-- (void)graphFacebookForMethod:(NSString *)method httpMethod:(NSString *)httpMethod params:(id)params callBack:(SCFacebookCallback)callBack
-{
+- (void)graphFacebookForMethod:(NSString *)method httpMethod:(NSString *)httpMethod params:(id)params callBack:(SCFacebookCallback)callBack {
     [[[FBSDKGraphRequest alloc] initWithGraphPath:method
                                        parameters:params
                                        HTTPMethod:httpMethod]
@@ -637,14 +609,12 @@
 #pragma mark -
 #pragma mark - FBSDKAppInviteDialogDelegate methods
 
-- (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog didCompleteWithResults:(NSDictionary *)results
-{
+- (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog didCompleteWithResults:(NSDictionary *)results {
     self.inviteCallcack(YES, results);
     self.inviteCallcack = nil;
 }
 
-- (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog didFailWithError:(NSError *)error
-{
+- (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog didFailWithError:(NSError *)error {
     self.inviteCallcack(NO, error);
     self.inviteCallcack = nil;
 }
@@ -654,20 +624,17 @@
 #pragma mark -
 #pragma mark - FBSDKSharingDelegate methods
 
-- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results
-{
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults:(NSDictionary *)results {
     self.sharedCallcack(YES, results);
     self.sharedCallcack = nil;
 }
 
-- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error
-{
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
     self.sharedCallcack(NO, error);
     self.sharedCallcack = nil;
 }
 
-- (void)sharerDidCancel:(id<FBSDKSharing>)sharer
-{
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
     self.sharedCallcack(YES, @"Cancelled");
     self.sharedCallcack = nil;
 }
@@ -679,8 +646,7 @@
 #pragma mark -
 #pragma mark - Singleton
 
-+ (SCFacebook *)shared
-{
++ (SCFacebook *)shared {
     static SCFacebook *scFacebook = nil;
     
     @synchronized (self){
@@ -700,162 +666,135 @@
 #pragma mark -
 #pragma mark - Public Methods
 
-+ (void)initWithReadPermissions:(NSArray *)readPermissions publishPermissions:(NSArray *)publishPermissions
-{
++ (void)initWithReadPermissions:(NSArray *)readPermissions publishPermissions:(NSArray *)publishPermissions {
     [[SCFacebook shared] initWithReadPermissions:readPermissions publishPermissions:publishPermissions];
 }
 
-+(BOOL)isSessionValid
-{
++(BOOL)isSessionValid {
     return [[SCFacebook shared] isSessionValid];
 }
 
-+ (void)loginCallBack:(SCFacebookCallback)callBack
-{
++ (void)loginCallBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] loginCallBack:callBack];
 }
 
-+ (void)loginWithBehavior:(FBSDKLoginBehavior)behavior CallBack:(SCFacebookCallback)callBack
-{
++ (void)loginWithBehavior:(FBSDKLoginBehavior)behavior CallBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] loginWithBehavior:behavior CallBack:callBack];
 }
 
-+ (void)logoutCallBack:(SCFacebookCallback)callBack
-{
++ (void)logoutCallBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] logoutCallBack:callBack];
 }
 
-+ (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack
-{
++ (void)getUserFields:(NSString *)fields callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] getUserFields:fields callBack:callBack];
 }
 
-+ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack
-{
-    [[SCFacebook shared] getUserFriendsCallBack:callBack];
++ (void)getUserFriendsFields:(NSString *)fields callBack:(SCFacebookCallback)callBack {
+    [[SCFacebook shared] getUserFriendsFields:fields callBack:callBack];
 }
 
-+ (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption callBack:(SCFacebookCallback)callBack
-{
++ (void)getUserFriendsCallBack:(SCFacebookCallback)callBack {
+    
+}
+
++ (void)feedPostWithLinkPath:(NSString *)url caption:(NSString *)caption callBack:(SCFacebookCallback)callBack {
     [SCFacebook shared].postType = FBPostTypeLink;
     [[SCFacebook shared] feedPostWithLinkPath:url caption:caption message:nil photo:nil video:nil callBack:callBack];
 }
 
-+ (void)feedPostWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostWithMessage:(NSString *)message callBack:(SCFacebookCallback)callBack {
     [SCFacebook shared].postType = FBPostTypeStatus;
     [[SCFacebook shared] feedPostWithLinkPath:nil caption:nil message:message photo:nil video:nil callBack:callBack];
 }
 
-+ (void)feedPostWithPhoto:(UIImage *)photo caption:(NSString *)caption callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostWithPhoto:(UIImage *)photo caption:(NSString *)caption callBack:(SCFacebookCallback)callBack {
     [SCFacebook shared].postType = FBPostTypePhoto;
     [[SCFacebook shared] feedPostWithLinkPath:nil caption:caption message:nil photo:photo video:nil callBack:callBack];
 }
 
-+ (void)feedPostWithVideo:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostWithVideo:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack {
     [SCFacebook shared].postType = FBPostTypeVideo;
     [[SCFacebook shared] feedPostWithLinkPath:nil caption:title message:description photo:nil video:videoData callBack:callBack];
 }
 
-+ (void)myFeedCallBack:(SCFacebookCallback)callBack
-{
++ (void)myFeedCallBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] myFeedCallBack:callBack];
 }
 
-+ (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack
-{
++ (void)inviteFriendsWithAppLinkURL:(NSURL *)url previewImageURL:(NSURL *)preview callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] inviteFriendsWithAppLinkURL:url previewImageURL:url callBack:callBack];
 }
 
-+ (void)getPagesCallBack:(SCFacebookCallback)callBack
-{
++ (void)getPagesCallBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] getPagesCallBack:callBack];
 }
 
-+ (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack
-{
++ (void)getPageById:(NSString *)pageId callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] getPageById:pageId callBack:callBack];
 }
 
-+ (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] feedPostForPage:page message:message callBack:callBack];
 }
 
-+ (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] feedPostForPage:page message:message photo:photo callBack:callBack];
 }
 
-+ (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostForPage:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] feedPostForPage:page message:message link:url callBack:callBack];
 }
 
-+ (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostForPage:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] feedPostForPage:page video:videoData title:title description:description callBack:callBack];
 }
 
-+ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] feedPostAdminForPageName:page message:message callBack:callBack];
 }
 
-+ (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostAdminForPageName:(NSString *)page video:(NSData *)videoData title:(NSString *)title description:(NSString *)description callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] feedPostAdminForPageName:page video:videoData title:title description:description callBack:callBack];
 }
 
-+ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message link:(NSString *)url callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] feedPostAdminForPageName:page message:message link:url callBack:callBack];
 }
 
-+ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostAdminForPageName:(NSString *)page message:(NSString *)message photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] feedPostAdminForPageName:page message:message photo:photo callBack:callBack];
 }
 
-+ (void)getAlbumsCallBack:(SCFacebookCallback)callBack
-{
++ (void)getAlbumsCallBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] getAlbumsCallBack:callBack];
 }
 
-+ (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
-{
++ (void)getAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] getAlbumById:albumId callBack:callBack];
 }
 
-+ (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack
-{
++ (void)getPhotosAlbumById:(NSString *)albumId callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] getPhotosAlbumById:albumId callBack:callBack];
 }
 
-+ (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack
-{
++ (void)createAlbumName:(NSString *)name message:(NSString *)message privacy:(FBAlbumPrivacyType)privacy callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] createAlbumName:name message:message privacy:privacy callBack:callBack];
 }
 
-+ (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack
-{
++ (void)feedPostForAlbumId:(NSString *)albumId photo:(UIImage *)photo callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] feedPostForAlbumId:albumId photo:photo callBack:callBack];
 }
 
-+ (void)sendForPostOpenGraphWithActionType:(NSString *)actionType graphObject:(FBSDKShareOpenGraphObject *)openGraphObject objectName:(NSString *)objectName viewController:(UIViewController *)viewController callBack:(SCFacebookCallback)callBack
-{
++ (void)sendForPostOpenGraphWithActionType:(NSString *)actionType graphObject:(FBSDKShareOpenGraphObject *)openGraphObject objectName:(NSString *)objectName viewController:(UIViewController *)viewController callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] sendForPostOpenGraphWithActionType:actionType graphObject:openGraphObject objectName:objectName viewController:(UIViewController *)viewController callBack:callBack];
 }
 
-+ (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack
-{
++ (void)graphFacebookForMethodGET:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] graphFacebookForMethodGET:method params:params callBack:callBack];
 }
 
-+ (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack
-{
++ (void)graphFacebookForMethodPOST:(NSString *)method params:(id)params callBack:(SCFacebookCallback)callBack {
     [[SCFacebook shared] graphFacebookForMethodPOST:method params:params callBack:callBack];
 }
 

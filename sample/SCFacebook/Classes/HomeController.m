@@ -16,7 +16,7 @@
 #define RemoveNull(field) ([[result objectForKey:field] isKindOfClass:[NSNull class]]) ? @"" : [result objectForKey:field];
 
 @interface HomeController (){
-        UIView *loadingView;
+    UIView *loadingView;
 }
 
 @property (strong, nonatomic) NSMutableArray *itemsArray;
@@ -38,8 +38,7 @@
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.title = @"SCFacebook";
@@ -65,8 +64,7 @@
     [self.itemsArray addObject:@"Albums"];
 }
 
-- (void)viewDidUnload
-{
+- (void)viewDidUnload {
     [super viewDidUnload];
 }
 
@@ -74,8 +72,7 @@
 #pragma mark -
 #pragma mark - Property
 
-- (NSMutableArray *)itemsArray
-{
+- (NSMutableArray *)itemsArray {
     if(!_itemsArray) _itemsArray = [[NSMutableArray alloc] init];
     return _itemsArray;
 }
@@ -84,8 +81,7 @@
 #pragma mark -
 #pragma mark - UIStoryboardSegue Delegate
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"FriendSegue"]) {
         FriendsViewControler *friendsViewController = segue.destinationViewController;
         friendsViewController.friendsArray = sender;
@@ -98,8 +94,7 @@
 #pragma mark - Methods
 
 
-- (void)showMessage:(NSString *)message
-{
+- (void)showMessage:(NSString *)message {
     if ([UIAlertController class]) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Alert" message:message preferredStyle:UIAlertControllerStyleAlert];
         
@@ -113,8 +108,7 @@
     }
 }
 
-- (void)getUserInfo
-{
+- (void)getUserInfo {
     loadingView.hidden = NO;
     
     [SCFacebook getUserFields:@"id, name, email, birthday, about, picture" callBack:^(BOOL success, id result) {
@@ -128,14 +122,13 @@
     }];
 }
 
-- (void)login
-{
+- (void)login {
     loadingView.hidden = NO;
     [self.navigationController popViewControllerAnimated:NO];
     
     [SCFacebook loginCallBack:^(BOOL success, id result) {
         loadingView.hidden = YES;
-
+        
         if (success) {
             [self showMessage:@"Success"];
         }else{
@@ -144,8 +137,7 @@
     }];
 }
 
-- (void)logout
-{
+- (void)logout {
     [SCFacebook logoutCallBack:^(BOOL success, id result) {
         if (success) {
             [self showMessage:[result description]];
@@ -153,11 +145,10 @@
     }];
 }
 
-- (void)getFriends
-{
+- (void)getFriends {
     loadingView.hidden = NO;
     
-    [SCFacebook getUserFriendsCallBack:^(BOOL success, id result) {
+    [SCFacebook getUserFriendsFields:@"id,name" callBack:^(BOOL success, id result) {
         loadingView.hidden = YES;
         if (success) {
             
@@ -168,8 +159,7 @@
     }];
 }
 
-- (void)publishYourWall
-{
+- (void)publishYourWall {
     self.userSheet = [[UIActionSheet alloc]
                       initWithTitle:@"Option Publish"
                       delegate:self
@@ -180,8 +170,7 @@
     [self.userSheet showFromRect:self.view.bounds inView:self.view animated:YES];
 }
 
-- (void)publishPageWall
-{
+- (void)publishPageWall {
     self.pageSheet = [[UIActionSheet alloc]
                       initWithTitle:@"Option Pages"
                       delegate:self
@@ -201,25 +190,23 @@
     [self.pageSheet showFromRect:self.view.bounds inView:self.view animated:YES];
 }
 
-- (void)publishAlbums
-{
+- (void)publishAlbums {
     self.albumSheet = [[UIActionSheet alloc]
-                      initWithTitle:@"Option Albums"
-                      delegate:self
-                      cancelButtonTitle:nil
-                      destructiveButtonTitle:@"Cancel"
-                      otherButtonTitles:
-                      @"Get Albums",
-                      @"Get AlbumId",
-                      @"Get Photos the album",
-                      @"Create Album",
-                      @"Post Photo in album", nil];
+                       initWithTitle:@"Option Albums"
+                       delegate:self
+                       cancelButtonTitle:nil
+                       destructiveButtonTitle:@"Cancel"
+                       otherButtonTitles:
+                       @"Get Albums",
+                       @"Get AlbumId",
+                       @"Get Photos the album",
+                       @"Create Album",
+                       @"Post Photo in album", nil];
     self.albumSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [self.albumSheet showFromRect:self.view.bounds inView:self.view animated:YES];
 }
 
-- (void)publishOpenGraph
-{
+- (void)publishOpenGraph {
     self.openGraphSheet = [[UIActionSheet alloc]
                            initWithTitle:@"Option Open Graph - Custom Stories"
                            delegate:self
@@ -232,8 +219,7 @@
     [self.openGraphSheet showFromRect:self.view.bounds inView:self.view animated:YES];
 }
 
-- (void)openGraph
-{
+- (void)openGraph {
     loadingView.hidden = NO;
     
     // Create an object
@@ -258,8 +244,7 @@
     }];
 }
 
-- (void)openGraphWithImage
-{
+- (void)openGraphWithImage {
     loadingView.hidden = NO;
     
     // Create an object
@@ -285,10 +270,12 @@
 }
 
 
-- (void)inviteFriends
-{
+- (void)inviteFriends {
     NSURL *appLink = [NSURL URLWithString:@"https://fb.me/1026080090769628"];
     NSURL *previewImage = [NSURL URLWithString:@"http://www.lucascorrea.com/lucas_apple.png"];
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     
     [SCFacebook inviteFriendsWithAppLinkURL:appLink previewImageURL:previewImage callBack:^(BOOL success, id result) {
         if (success) {
@@ -297,6 +284,7 @@
             [self showMessage:[result description]];
         }
     }];
+#pragma clang diagnostic pop
 }
 
 
@@ -305,8 +293,7 @@
 #pragma mark -
 #pragma mark - UIActionSheetDelegate
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == actionSheet.destructiveButtonIndex) { return; }
     
     if (self.userSheet == actionSheet) {
@@ -354,7 +341,7 @@
                     loadingView.hidden = YES;
                     [self showMessage:[result description]];
                 }];
-
+                
             }
                 break;
             default:
@@ -363,7 +350,7 @@
     }
     
     //Pages and Page Admin
-    else if (self.pageSheet == actionSheet){
+    else if (self.pageSheet == actionSheet) {
         
         switch (buttonIndex) {
                 
@@ -497,7 +484,7 @@
     }
     
     //Albums
-    else if (self.albumSheet == actionSheet){
+    else if (self.albumSheet == actionSheet) {
         
         switch (buttonIndex) {
                 
@@ -559,7 +546,7 @@
     }
     
     //Open graph
-    else if (self.openGraphSheet == actionSheet){
+    else if (self.openGraphSheet == actionSheet) {
         switch (buttonIndex) {
             case 1:
                 [self openGraph];
@@ -579,18 +566,15 @@
 #pragma mark -
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.itemsArray count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     HomeCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
@@ -604,8 +588,7 @@
 #pragma mark -
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (indexPath.row == 0) {
@@ -628,7 +611,5 @@
         [self publishAlbums];
     }
 }
-
-
 
 @end
